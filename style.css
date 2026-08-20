@@ -4,11 +4,16 @@
     box-sizing: border-box;
 }
 
-body {
-    font-family: Arial, sans-serif;
+html {
+    scroll-behavior: smooth;
+}
 
-    background: #0f1117;
-    color: white;
+body {
+    font-family: Arial, Helvetica, sans-serif;
+
+    background: #0b0d12;
+
+    color: #ffffff;
 
     min-height: 100vh;
 
@@ -17,40 +22,67 @@ body {
 }
 
 
-/* NAVBAR */
+/* =========================
+   NAVBAR
+========================= */
 
 .navbar {
-    min-height: 70px;
+    min-height: 72px;
 
-    padding: 0 40px;
+    padding: 0 6%;
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 
-    background: #171a23;
+    background: rgba(13, 16, 23, 0.95);
 
-    border-bottom: 1px solid #292d38;
+    border-bottom: 1px solid #222631;
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 100;
 }
 
 .logo {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
     color: white;
 
-    font-size: 24px;
-    font-weight: bold;
-
     text-decoration: none;
+
+    font-size: 22px;
+
+    font-weight: 800;
 }
+
+.logo-icon {
+    font-size: 25px;
+}
+
 
 nav {
     display: flex;
-    gap: 30px;
+
+    gap: 32px;
 }
 
 nav a {
-    color: #999;
+    color: #8e94a3;
 
     text-decoration: none;
+
+    font-size: 15px;
+
+    font-weight: 600;
 
     transition: 0.2s;
 }
@@ -60,8 +92,10 @@ nav a.active {
     color: white;
 }
 
+
 .account {
     display: flex;
+
     align-items: center;
 
     gap: 10px;
@@ -74,286 +108,457 @@ nav a.active {
 
     border-radius: 7px;
 
+    font-size: 14px;
+
+    font-weight: 600;
+
     transition: 0.2s;
 }
 
 .login-button {
     color: white;
 
-    border: 1px solid #3a3f4d;
+    border: 1px solid #303542;
 }
 
 .login-button:hover {
-    background: #252a36;
+    background: #1c2029;
 }
 
 .register-button {
     background: white;
 
     color: #111;
+
+    border: 1px solid white;
 }
 
 .register-button:hover {
     transform: translateY(-1px);
 }
 
-.active-button {
-    opacity: 0.75;
-}
 
-
-/* HOME */
+/* =========================
+   HERO
+========================= */
 
 .hero {
-    min-height: 500px;
+    min-height: 570px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     text-align: center;
 
+    padding: 80px 20px;
+
+    position: relative;
+
+    overflow: hidden;
+
     background:
         radial-gradient(
-            circle at center,
-            #252b3b 0%,
-            #0f1117 65%
+            circle at 50% 35%,
+            #252b3a 0%,
+            #11151e 35%,
+            #0b0d12 70%
         );
 }
 
-.hero-content {
-    max-width: 700px;
+.hero::before {
+    content: "";
 
-    padding: 30px;
+    position: absolute;
+
+    width: 500px;
+
+    height: 500px;
+
+    border-radius: 50%;
+
+    border: 1px solid #292e3a;
+
+    opacity: 0.5;
+}
+
+.hero-content {
+    max-width: 850px;
+
+    position: relative;
+
+    z-index: 1;
+}
+
+.hero-badge {
+    display: inline-block;
+
+    padding: 8px 14px;
+
+    margin-bottom: 25px;
+
+    border: 1px solid #303644;
+
+    border-radius: 100px;
+
+    background: rgba(255, 255, 255, 0.04);
+
+    color: #aeb4c1;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
 }
 
 .hero h1 {
-    font-size: 52px;
+    font-size: clamp(42px, 7vw, 76px);
 
-    margin-bottom: 20px;
+    line-height: 1.05;
+
+    letter-spacing: -2px;
+
+    margin-bottom: 25px;
+}
+
+.hero h1 span {
+    display: block;
+
+    color: #aeb5c5;
 }
 
 .hero p {
-    color: #aaa;
+    max-width: 600px;
 
-    font-size: 20px;
+    margin: 0 auto 35px;
 
-    margin-bottom: 30px;
+    color: #9299a8;
+
+    font-size: 18px;
+
+    line-height: 1.7;
 }
 
-.start-button {
+.hero-buttons {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 12px;
+}
+
+.primary-button,
+.secondary-button {
     display: inline-block;
 
-    padding: 13px 25px;
+    padding: 14px 23px;
 
     border-radius: 8px;
 
-    background: white;
-
-    color: #111;
-
     text-decoration: none;
 
-    font-weight: bold;
+    font-weight: 700;
 
     transition: 0.2s;
 }
 
-.start-button:hover {
-    transform: translateY(-2px);
-}
-
-
-/* NORMAL PAGES */
-
-.page {
-    flex: 1;
-}
-
-.page-header {
-    text-align: center;
-
-    padding: 100px 20px;
-}
-
-.page-header h1 {
-    font-size: 42px;
-
-    margin-bottom: 15px;
-}
-
-.page-header p {
-    color: #888;
-
-    font-size: 18px;
-}
-
-
-/* WELCOME */
-
-.welcome {
-    text-align: center;
-
-    padding: 80px 20px;
-}
-
-.welcome h2 {
-    font-size: 32px;
-
-    margin-bottom: 15px;
-}
-
-.welcome p {
-    color: #888;
-}
-
-
-/* AUTH */
-
-.auth-page {
-    flex: 1;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    padding: 60px 20px;
-}
-
-.auth-box {
-    width: 100%;
-    max-width: 420px;
-
-    padding: 35px;
-
-    background: #171a23;
-
-    border: 1px solid #292d38;
-
-    border-radius: 12px;
-}
-
-.auth-box h1 {
-    text-align: center;
-
-    margin-bottom: 30px;
-}
-
-.auth-box form {
-    display: flex;
-    flex-direction: column;
-}
-
-.auth-box label {
-    margin-bottom: 8px;
-
-    color: #ccc;
-}
-
-.auth-box input {
-    padding: 12px;
-
-    margin-bottom: 20px;
-
-    border: 1px solid #3a3f4d;
-
-    border-radius: 7px;
-
-    outline: none;
-
-    background: #0f1117;
-
-    color: white;
-
-    font-size: 16px;
-}
-
-.auth-box input:focus {
-    border-color: #777;
-}
-
-.auth-box button {
-    padding: 12px;
-
-    margin-top: 5px;
-
-    border: none;
-
-    border-radius: 7px;
-
+.primary-button {
     background: white;
 
     color: #111;
-
-    font-size: 16px;
-
-    font-weight: bold;
-
-    cursor: pointer;
 }
 
-.auth-box button:hover {
-    transform: translateY(-1px);
+.primary-button:hover {
+    transform: translateY(-2px);
 }
 
-.auth-box p {
-    text-align: center;
+.secondary-button {
+    border: 1px solid #343a48;
 
-    color: #888;
+    background: #151922;
 
-    margin-top: 25px;
+    color: white;
 }
 
-.auth-box p a {
+.secondary-button:hover {
+    background: #1d222d;
+}
+
+
+/* =========================
+   FEATURES
+========================= */
+
+.features {
+    max-width: 1100px;
+
+    width: 90%;
+
+    margin: 0 auto;
+
+    padding: 70px 0;
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 20px;
+}
+
+.feature {
+    padding: 30px;
+
+    background: #11151d;
+
+    border: 1px solid #242934;
+
+    border-radius: 12px;
+
+    transition: 0.2s;
+}
+
+.feature:hover {
+    transform: translateY(-3px);
+
+    border-color: #3a404d;
+}
+
+.feature-icon {
+    font-size: 28px;
+
+    margin-bottom: 18px;
+}
+
+.feature h3 {
+    font-size: 19px;
+
+    margin-bottom: 10px;
+}
+
+.feature p {
+    color: #858c9b;
+
+    line-height: 1.6;
+
+    font-size: 14px;
+}
+
+
+/* =========================
+   GAME PREVIEW
+========================= */
+
+.games-preview {
+    max-width: 1100px;
+
+    width: 90%;
+
+    margin: 0 auto;
+
+    padding: 40px 0 100px;
+}
+
+.section-heading {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: end;
+
+    margin-bottom: 25px;
+}
+
+.section-label {
+    color: #777f90;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 8px;
+}
+
+.section-heading h2 {
+    font-size: 32px;
+}
+
+.view-all {
+    color: #aeb5c5;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+.view-all:hover {
     color: white;
 }
 
 
-/* FOOTER */
+.empty-games {
+    min-height: 300px;
 
-footer {
-    padding: 30px;
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
 
     text-align: center;
 
-    color: #666;
+    padding: 40px;
 
-    border-top: 1px solid #292d38;
+    border: 1px dashed #303542;
+
+    border-radius: 14px;
+
+    background: #0f131a;
+}
+
+.empty-icon {
+    font-size: 45px;
+
+    margin-bottom: 18px;
+}
+
+.empty-games h3 {
+    font-size: 22px;
+
+    margin-bottom: 10px;
+}
+
+.empty-games p {
+    max-width: 450px;
+
+    color: #777f90;
+
+    line-height: 1.6;
+
+    margin-bottom: 25px;
 }
 
 
-/* MOBILE */
+/* =========================
+   FOOTER
+========================= */
 
-@media (max-width: 700px) {
+footer {
+    margin-top: auto;
+
+    padding: 35px 20px;
+
+    text-align: center;
+
+    border-top: 1px solid #222631;
+
+    background: #0d1016;
+}
+
+.footer-logo {
+    font-weight: 700;
+
+    margin-bottom: 8px;
+}
+
+footer p {
+    color: #666d7b;
+
+    font-size: 13px;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 800px) {
 
     .navbar {
-        padding: 20px;
+        padding: 18px 20px;
 
-        flex-direction: column;
+        flex-wrap: wrap;
 
-        gap: 20px;
+        gap: 18px;
     }
 
     nav {
-        gap: 20px;
-    }
+        order: 3;
 
-    .account {
         width: 100%;
 
         justify-content: center;
+
+        gap: 22px;
+    }
+
+    .account {
+        margin-left: auto;
+    }
+
+    .hero {
+        min-height: 520px;
     }
 
     .hero h1 {
-        font-size: 38px;
+        letter-spacing: -1px;
     }
 
-    .hero p {
-        font-size: 17px;
+    .features {
+        grid-template-columns: 1fr;
     }
 
-    .auth-box {
-        padding: 25px;
+}
+
+
+@media (max-width: 500px) {
+
+    .logo {
+        font-size: 19px;
+    }
+
+    .account a {
+        padding: 8px 11px;
+
+        font-size: 12px;
+    }
+
+    .hero {
+        padding: 60px 20px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+
+        width: 100%;
+
+        max-width: 280px;
+
+        margin: auto;
+    }
+
+    .hero-buttons a {
+        text-align: center;
+    }
+
+    .section-heading {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+    .games-preview {
+        padding-bottom: 70px;
     }
 
 }
