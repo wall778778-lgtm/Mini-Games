@@ -1,0 +1,56 @@
+body {
+
+    min-height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+
+    background: #0f1117;
+
+    color: white;
+
+    font-family: Arial, sans-serif;
+
+}
+
+
+h1 {
+
+    font-size: 50px;
+
+}
+
+
+#score {
+
+    font-size: 30px;
+
+}
+
+
+button {
+
+    padding: 20px 50px;
+
+    font-size: 25px;
+
+    cursor: pointer;
+
+    border-radius: 10px;
+
+    border: none;
+
+}
+
+
+a {
+
+    color: white;
+
+}
