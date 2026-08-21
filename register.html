@@ -1,98 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Register - Mini Games</title>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
 
+
 <body>
+
 
 <header class="navbar">
 
     <a href="index.html" class="logo">
-        Mini Games
+        🎮 Mini Games
     </a>
 
+
     <nav>
-        <a href="index.html">Home</a>
-        <a href="games.html">Games</a>
-        <a href="community.html">Community</a>
+
+        <a href="index.html">
+            Home
+        </a>
+
+        <a href="games.html">
+            Games
+        </a>
+
     </nav>
 
-    <div class="account">
-        <a href="login.html" class="login-button">Login</a>
-        <a href="register.html" class="register-button active-button">
-            Register
-        </a>
-    </div>
 
 </header>
 
 
+
 <main class="auth-page">
 
-    <div class="auth-box">
 
-        <h1>Create Account</h1>
-
-        <form>
-
-            <label for="username">Username</label>
-
-            <input
-                type="text"
-                id="username"
-                name="username"
-                required
-            >
+<div class="auth-box">
 
 
-            <label for="email">Email</label>
-
-            <input
-                type="email"
-                id="email"
-                name="email"
-                required
-            >
+<h1>
+    Create Account
+</h1>
 
 
-            <label for="password">Password</label>
-
-            <input
-                type="password"
-                id="password"
-                name="password"
-                required
-            >
+<p>
+    Join Mini Games
+</p>
 
 
-            <button type="submit">
-                Create Account
-            </button>
 
-        </form>
+<form id="registerForm">
 
 
-        <p>
-            Already have an account?
-            <a href="login.html">Login</a>
-        </p>
+<input 
+    type="text"
+    id="username"
+    placeholder="Username"
+    required
+>
 
-    </div>
+
+<input 
+    type="email"
+    id="email"
+    placeholder="Email"
+    required
+>
+
+
+<input 
+    type="password"
+    id="password"
+    placeholder="Password"
+    required
+>
+
+
+<button type="submit">
+    Register
+</button>
+
+
+</form>
+
+
+<p id="message"></p>
+
+
+</div>
+
 
 </main>
 
 
-<footer>
 
-    <p>© 2026 Mini Games</p>
+<script src="script.js"></script>
 
-</footer>
 
 </body>
+
 </html>
