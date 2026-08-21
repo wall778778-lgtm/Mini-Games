@@ -1,3 +1,4 @@
+console.log("SCRIPT IS WORKING");
 alert("JS is working");
 console.log("Mini Games website loaded.");
 
