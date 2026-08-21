@@ -2,7 +2,9 @@ export async function onRequestPost(context) {
 
     const { request, env } = context;
 
+
     const data = await request.json();
+
 
     const username = data.username;
     const email = data.email;
@@ -12,21 +14,58 @@ export async function onRequestPost(context) {
     if (!username || !email || !password) {
 
         return Response.json({
+
             success: false,
-            message: "Missing information"
+
+            message: "Please fill all fields"
+
         });
 
     }
 
 
-    // Database connection will be added after we confirm D1 binding
+    try {
 
-    return Response.json({
 
-        success: true,
+        await env.DB
+        .prepare(
+            `
+            INSERT INTO users
+            (username, email, password)
+            VALUES (?, ?, ?)
+            `
+        )
+        .bind(
+            username,
+            email,
+            password
+        )
+        .run();
 
-        message: "Register API is working"
 
-    });
+
+        return Response.json({
+
+            success: true,
+
+            message: "Account created successfully"
+
+        });
+
+
+
+    } catch(error) {
+
+
+        return Response.json({
+
+            success: false,
+
+            message: "Username or email already exists"
+
+        });
+
+
+    }
 
 }
