@@ -1,9 +1,7 @@
 *{
-
 margin:0;
 padding:0;
 box-sizing:border-box;
-
 }
 
 
@@ -12,11 +10,11 @@ body{
 min-height:100vh;
 
 background:
-radial-gradient(circle,#25205c,#080a12);
+linear-gradient(#050816,#10184a);
 
 color:white;
 
-font-family:Arial;
+font-family:Arial,sans-serif;
 
 display:flex;
 
@@ -26,6 +24,27 @@ align-items:center;
 
 text-align:center;
 
+overflow:hidden;
+
+}
+
+
+
+main{
+
+width:95%;
+
+}
+
+
+
+h1{
+
+font-size:45px;
+
+text-shadow:
+0 0 15px #00eaff;
+
 }
 
 
@@ -34,11 +53,14 @@ canvas{
 
 margin-top:20px;
 
-background:#05070d;
+background:#02040c;
 
 border:3px solid #00eaff;
 
-border-radius:15px;
+border-radius:20px;
+
+box-shadow:
+0 0 30px #00eaff55;
 
 max-width:95%;
 
@@ -50,15 +72,17 @@ button{
 
 margin-top:20px;
 
-padding:12px 30px;
+padding:12px 35px;
 
 border:none;
 
-border-radius:12px;
+border-radius:15px;
 
 font-size:18px;
 
 cursor:pointer;
+
+background:#00eaff;
 
 }
 
@@ -82,8 +106,13 @@ text-decoration:none;
 
 #message{
 
-color:#00eaff;
-
 margin-top:15px;
+
+color:#00ff99;
+
+font-size:25px;
+
+text-shadow:
+0 0 15px #00ff99;
 
 }
