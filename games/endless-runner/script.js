@@ -195,24 +195,24 @@ player.jumping=false;
 // spawn obstacles
 
 
-if(
-Math.random()<0.02
-){
+if(Math.random()<0.008){
 
 obstacles.push({
 
 x:520,
 
-y:170,
+y:150,
 
-width:30,
+width:45,
 
-height:50
+height:70,
+
+type:
+Math.floor(Math.random()*3)
 
 });
 
 }
-
 
 
 
@@ -376,28 +376,101 @@ player.y+22,
 obstacles.forEach(ob=>{
 
 
-ctx.shadowBlur=20;
+ctx.shadowBlur=25;
 
 ctx.shadowColor="#ff3366";
 
 
+// cyber barrier body
+
 ctx.fillStyle="#ff3366";
+
+
+ctx.beginPath();
+
+
+ctx.moveTo(
+ob.x+ob.width/2,
+ob.y
+);
+
+
+ctx.lineTo(
+ob.x+ob.width,
+ob.y+ob.height
+);
+
+
+ctx.lineTo(
+ob.x,
+ob.y+ob.height
+);
+
+
+ctx.closePath();
+
+
+ctx.fill();
+
+
+// energy core
+
+ctx.shadowBlur=10;
+
+ctx.shadowColor="#ffffff";
+
+ctx.fillStyle="#ffffff";
 
 
 ctx.fillRect(
 
-ob.x,
+ob.x+18,
 
-ob.y,
+ob.y+25,
 
-ob.width,
+8,
 
-ob.height
+15
+
+);
+
+
+
+// side lights
+
+ctx.fillStyle="#00eaff";
+
+
+ctx.fillRect(
+
+ob.x+5,
+
+ob.y+ob.height-10,
+
+8,
+
+5
+
+);
+
+
+ctx.fillRect(
+
+ob.x+ob.width-13,
+
+ob.y+ob.height-10,
+
+8,
+
+5
 
 );
 
 
 });
+
+
+ctx.shadowBlur=0;
 
 
 ctx.shadowBlur=0;
