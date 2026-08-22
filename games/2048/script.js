@@ -1,36 +1,40 @@
-const board = document.getElementById("board");
-const scoreText = document.getElementById("score");
-const restart = document.getElementById("restart");
-const message = document.getElementById("message");
+const boardElement =
+document.getElementById("board");
+
+const scoreElement =
+document.getElementById("score");
+
+const restart =
+document.getElementById("restart");
+
+const message =
+document.getElementById("message");
 
 
-let grid;
-let score;
+let board;
+
+let score=0;
 
 
 
-function startGame(){
+function start(){
 
-    grid = [
-        [0,0,0,0],
-        [0,0,0,0],
-        [0,0,0,0],
-        [0,0,0,0]
-    ];
+board=[
+[0,0,0,0],
+[0,0,0,0],
+[0,0,0,0],
+[0,0,0,0]
+];
 
+score=0;
 
-    score = 0;
+message.textContent="";
 
-    scoreText.textContent = score;
+addTile();
 
-    message.textContent="";
+addTile();
 
-
-    addTile();
-
-    addTile();
-
-    draw();
+draw();
 
 }
 
@@ -38,35 +42,34 @@ function startGame(){
 
 function addTile(){
 
-    let empty=[];
+let empty=[];
 
 
-    for(let r=0;r<4;r++){
+for(let r=0;r<4;r++){
 
-        for(let c=0;c<4;c++){
+for(let c=0;c<4;c++){
 
-            if(grid[r][c]===0)
+if(board[r][c]===0)
 
-                empty.push([r,c]);
+empty.push([r,c]);
 
-        }
+}
 
-    }
-
-
-
-    if(empty.length===0)
-        return;
+}
 
 
 
-    let spot =
-    empty[Math.floor(Math.random()*empty.length)];
+if(empty.length){
+
+let spot=
+empty[Math.floor(Math.random()*empty.length)];
 
 
+board[spot[0]][spot[1]]
+=
+Math.random()<.9?2:4;
 
-    grid[spot[0]][spot[1]] =
-    Math.random()<0.9 ? 2 : 4;
+}
 
 }
 
@@ -74,92 +77,130 @@ function addTile(){
 
 function draw(){
 
-    board.innerHTML="";
+boardElement.innerHTML="";
 
 
-    grid.forEach(row=>{
-
-        row.forEach(value=>{
+board.flat().forEach(value=>{
 
 
-            let tile=document.createElement("div");
-
-            tile.className="tile";
-
-            tile.textContent =
-            value===0 ? "" : value;
+let tile=
+document.createElement("div");
 
 
-            board.appendChild(tile);
+tile.className="tile";
 
 
-        });
+if(value){
+
+tile.textContent=value;
+
+tile.classList.add("pop");
 
 
-    });
+tile.style.background =
+getColor(value);
+
+}
+
+
+boardElement.appendChild(tile);
+
+
+});
+
+
+scoreElement.textContent=score;
+
 
 }
 
 
 
+function getColor(value){
+
+let colors={
+
+2:"#1e90ff",
+4:"#0066ff",
+8:"#7b2cff",
+16:"#b026ff",
+32:"#ff0080",
+64:"#ff0055",
+128:"#00eaff",
+256:"#00ff99",
+512:"#ffff00",
+1024:"#ff9900",
+2048:"#ffffff"
+
+};
+
+
+return colors[value] || "#fff";
+
+}
+
+
+
+
+function slide(row){
+
+
+let filtered=row.filter(x=>x);
+
+
+for(let i=0;i<filtered.length-1;i++){
+
+
+if(filtered[i]===filtered[i+1]){
+
+
+filtered[i]*=2;
+
+score+=filtered[i];
+
+
+filtered.splice(i+1,1);
+
+
+}
+
+
+}
+
+
+while(filtered.length<4)
+
+filtered.push(0);
+
+
+return filtered;
+
+}
+
+
+
+
+
 function moveLeft(){
 
-
-    let moved=false;
-
-
-    for(let r=0;r<4;r++){
+let old=JSON.stringify(board);
 
 
-        let row =
-        grid[r].filter(x=>x!==0);
+for(let r=0;r<4;r++)
+
+board[r]=slide(board[r]);
 
 
 
-        for(let i=0;i<row.length-1;i++){
+if(old!==JSON.stringify(board)){
 
-            if(row[i]===row[i+1]){
+addTile();
 
-                row[i]*=2;
+draw();
 
-                score+=row[i];
+checkWin();
 
-                row.splice(i+1,1);
-
-                moved=true;
-
-            }
-
-        }
-
-
-
-        while(row.length<4)
-
-            row.push(0);
-
-
-
-        if(row.join()!=grid[r].join())
-
-            moved=true;
-
-
-
-        grid[r]=row;
-
-
-    }
-
-
-
-    if(moved){
-
-        addTile();
-
-        draw();
-
-    }
+}
 
 
 }
@@ -168,20 +209,61 @@ function moveLeft(){
 
 function rotate(){
 
-    grid =
-    grid[0].map((_,i)=>
-        grid.map(row=>row[i]).reverse()
-    );
+board=
+board[0].map((_,i)=>
+board.map(row=>row[i]).reverse()
+);
 
 }
 
 
 
-function move(){
+function moveRight(){
 
-    moveLeft();
+rotate();
+
+rotate();
+
+moveLeft();
+
+rotate();
+
+rotate();
 
 }
+
+
+
+function moveUp(){
+
+rotate();
+
+rotate();
+
+rotate();
+
+moveLeft();
+
+rotate();
+
+}
+
+
+
+function moveDown(){
+
+rotate();
+
+moveLeft();
+
+rotate();
+
+rotate();
+
+rotate();
+
+}
+
 
 
 
@@ -191,49 +273,40 @@ e=>{
 
 
 if(e.key==="ArrowLeft")
-
-    move();
-
-
-if(e.key==="ArrowRight"){
-
-    rotate();
-    rotate();
-    move();
-    rotate();
-    rotate();
-
-}
+moveLeft();
 
 
-if(e.key==="ArrowUp"){
-
-    rotate();
-    rotate();
-    rotate();
-    move();
-    rotate();
-
-}
+if(e.key==="ArrowRight")
+moveRight();
 
 
-if(e.key==="ArrowDown"){
+if(e.key==="ArrowUp")
+moveUp();
 
-    rotate();
-    move();
-    rotate();
-    rotate();
-    rotate();
 
-}
+if(e.key==="ArrowDown")
+moveDown();
 
 
 });
 
 
 
-restart.onclick=startGame;
+
+function checkWin(){
+
+if(board.flat().includes(2048)){
+
+message.textContent=
+"You Win! 🎉";
+
+}
+
+}
 
 
 
-startGame();
+restart.onclick=start;
+
+
+start();
