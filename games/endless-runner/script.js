@@ -497,12 +497,7 @@ ctx.fillRect(
 
 
 
-  restartButton.onclick=startGame;
-
-
-
-startGame();
-
+ 
 
 // particles
 
@@ -595,12 +590,16 @@ jump();
 
 
 
-
 canvas.addEventListener(
 "touchstart",
 jump
 );
 
+ restartButton.onclick=startGame;
+
+
+
+startGame();
 
 
 
