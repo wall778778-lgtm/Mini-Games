@@ -572,7 +572,11 @@ message.textContent=
 }
 
 
+restartButton.onclick=startGame;
 
+
+
+startGame();
 
 
 document.addEventListener(
