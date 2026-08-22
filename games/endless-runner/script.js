@@ -195,7 +195,7 @@ player.jumping=false;
 // spawn obstacles
 
 
-if(Math.random()<0.008){
+if(Math.random()<0.0010){
 
 obstacles.push({
 
