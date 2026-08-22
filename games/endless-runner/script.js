@@ -497,6 +497,12 @@ ctx.fillRect(
 
 
 
+  restartButton.onclick=startGame;
+
+
+
+startGame();
+
 
 // particles
 
@@ -572,11 +578,6 @@ message.textContent=
 }
 
 
-restartButton.onclick=startGame;
-
-
-
-startGame();
 
 
 document.addEventListener(
