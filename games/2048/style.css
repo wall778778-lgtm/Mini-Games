@@ -1,9 +1,7 @@
 *{
-
 margin:0;
 padding:0;
 box-sizing:border-box;
-
 }
 
 
@@ -11,11 +9,12 @@ body{
 
 height:100vh;
 
-background:#10131f;
-
-color:white;
+background:
+radial-gradient(circle at top,#25205c,#080a12);
 
 font-family:Arial;
+
+color:white;
 
 display:flex;
 
@@ -28,6 +27,7 @@ text-align:center;
 }
 
 
+
 main{
 
 width:90%;
@@ -35,13 +35,25 @@ width:90%;
 }
 
 
+
 h1{
 
 font-size:45px;
 
-margin-bottom:15px;
+margin-bottom:20px;
 
 }
+
+
+
+.score-box{
+
+font-size:22px;
+
+margin-bottom:20px;
+
+}
+
 
 
 #board{
@@ -50,11 +62,13 @@ width:360px;
 
 height:360px;
 
-background:#22283a;
-
-margin:25px auto;
+margin:auto;
 
 padding:10px;
+
+background:#111827;
+
+border-radius:20px;
 
 display:grid;
 
@@ -62,7 +76,8 @@ grid-template-columns:repeat(4,1fr);
 
 gap:10px;
 
-border-radius:15px;
+box-shadow:
+0 0 30px rgba(0,220,255,.2);
 
 }
 
@@ -70,7 +85,11 @@ border-radius:15px;
 
 .tile{
 
-background:#333b55;
+height:77px;
+
+border-radius:12px;
+
+background:#182238;
 
 display:flex;
 
@@ -82,7 +101,33 @@ font-size:30px;
 
 font-weight:bold;
 
-border-radius:10px;
+transition:.15s;
+
+}
+
+
+
+.tile.pop{
+
+animation:pop .2s;
+
+}
+
+
+
+@keyframes pop{
+
+from{
+
+transform:scale(0);
+
+}
+
+to{
+
+transform:scale(1);
+
+}
 
 }
 
@@ -90,11 +135,13 @@ border-radius:10px;
 
 button{
 
-padding:12px 30px;
+margin-top:25px;
+
+padding:12px 35px;
 
 border:none;
 
-border-radius:10px;
+border-radius:12px;
 
 font-size:18px;
 
@@ -122,8 +169,31 @@ text-decoration:none;
 
 #message{
 
+margin-top:20px;
+
 color:#00eaff;
 
-margin-top:20px;
+}
+
+
+
+@media(max-width:450px){
+
+#board{
+
+width:320px;
+
+height:320px;
+
+}
+
+
+.tile{
+
+height:67px;
+
+font-size:25px;
+
+}
 
 }
