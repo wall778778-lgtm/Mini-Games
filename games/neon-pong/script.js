@@ -243,31 +243,64 @@ draw();
 function hitPaddle(paddle){
 
 
-let hit =
-(ball.y -
-(paddle.y+paddle.height/2))
-/ (paddle.height/2);
+let relativeIntersect =
+(ball.y - (paddle.y + paddle.height/2))
+/
+(paddle.height/2);
+
+
+// limit angle
+
+relativeIntersect =
+Math.max(
+-1,
+Math.min(1,relativeIntersect)
+);
+
+
+
+let maxAngle =
+Math.PI/3; // 60 degrees
 
 
 
 let angle =
-hit*5;
+relativeIntersect * maxAngle;
+
+
+
+let speed =
+Math.sqrt(
+ball.vx*ball.vx +
+ball.vy*ball.vy
+);
 
 
 
 let direction =
-ball.vx>0?1:-1;
+ball.vx > 0 ? -1 : 1;
 
-
-
-ball.speed+=0.3;
 
 
 ball.vx =
-direction*ball.speed;
+Math.cos(angle) *
+speed *
+direction;
 
 
-ball.vy=angle;
+
+ball.vy =
+Math.sin(angle) *
+speed;
+
+
+
+// increase difficulty
+
+ball.vx *= 1.05;
+
+ball.vy *= 1.05;
+
 
 
 createParticles(
@@ -277,7 +310,6 @@ ball.y
 
 
 }
-
 
 
 
