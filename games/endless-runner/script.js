@@ -530,7 +530,6 @@ canvas.addEventListener(
 });
 
 
-restartButton.onclick = startGame;
 
 
 startGame();
