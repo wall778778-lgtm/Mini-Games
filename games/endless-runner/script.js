@@ -1,23 +1,35 @@
-const canvas = document.getElementById("game");
+const canvas =
+document.getElementById("game");
 
-const ctx = canvas.getContext("2d");
+const ctx =
+canvas.getContext("2d");
 
 
-const scoreText = document.getElementById("score");
+const scoreText =
+document.getElementById("score");
 
-const restartButton = document.getElementById("restart");
+const restartButton =
+document.getElementById("restart");
 
-const message = document.getElementById("message");
+const message =
+document.getElementById("message");
 
 
 
 let player;
 
-let obstacle;
+let obstacles=[];
 
-let score;
+let stars=[];
 
-let running;
+let particles=[];
+
+
+let score=0;
+
+let speed=6;
+
+let running=true;
 
 let loop;
 
@@ -26,15 +38,13 @@ let loop;
 function startGame(){
 
 
-player = {
+player={
 
 x:80,
 
-y:180,
+y:160,
 
-width:30,
-
-height:30,
+size:35,
 
 velocity:0,
 
@@ -44,33 +54,41 @@ jumping:false
 
 
 
-obstacle = {
+obstacles=[];
 
-x:500,
-
-y:190,
-
-width:30,
-
-height:40
-
-};
-
+particles=[];
 
 
 score=0;
 
-scoreText.textContent=score;
+speed=6;
 
 
 message.textContent="";
+
+
+stars=[];
+
+
+for(let i=0;i<60;i++){
+
+stars.push({
+
+x:Math.random()*500,
+
+y:Math.random()*200,
+
+size:Math.random()*2+1
+
+});
+
+}
 
 
 running=true;
 
 
 clearInterval(loop);
-
 
 loop=setInterval(update,16);
 
@@ -90,11 +108,15 @@ player.velocity=-11;
 
 player.jumping=true;
 
+
+createParticles(
+player.x,
+player.y
+);
+
 }
 
-
 }
-
 
 
 
@@ -116,15 +138,49 @@ canvas.height
 
 
 
+
+// stars
+
+
+stars.forEach(star=>{
+
+
+star.x-=1;
+
+
+if(star.x<0)
+
+star.x=500;
+
+
+
+ctx.fillStyle="#ffffff";
+
+ctx.fillRect(
+star.x,
+star.y,
+star.size,
+star.size
+);
+
+
+});
+
+
+
+
+// physics
+
+
 player.velocity+=0.5;
 
 player.y+=player.velocity;
 
 
 
-if(player.y>=180){
+if(player.y>=160){
 
-player.y=180;
+player.y=160;
 
 player.velocity=0;
 
@@ -134,32 +190,51 @@ player.jumping=false;
 
 
 
-obstacle.x-=6;
 
 
+// spawn obstacles
 
-if(obstacle.x<-40){
 
-obstacle.x=520;
+if(
+Math.random()<0.02
+){
 
-score++;
+obstacles.push({
 
-scoreText.textContent=score;
+x:520,
+
+y:170,
+
+width:30,
+
+height:50
+
+});
 
 }
 
 
 
 
+// move obstacles
+
+
+obstacles.forEach(ob=>{
+
+
+ob.x-=speed;
+
+
+
 if(
 
-player.x < obstacle.x + obstacle.width &&
+player.x < ob.x+ob.width &&
 
-player.x + player.width > obstacle.x &&
+player.x+player.size > ob.x &&
 
-player.y < obstacle.y + obstacle.height &&
+player.y < ob.y+ob.height &&
 
-player.y + player.height > obstacle.y
+player.y+player.size > ob.y
 
 ){
 
@@ -168,6 +243,54 @@ gameOver();
 }
 
 
+});
+
+
+
+
+
+obstacles =
+obstacles.filter(
+ob=>ob.x>-50
+);
+
+
+
+
+
+particles.forEach(p=>{
+
+
+p.x+=p.dx;
+
+p.y+=p.dy;
+
+p.life--;
+
+
+});
+
+
+particles =
+particles.filter(
+p=>p.life>0
+);
+
+
+
+
+
+score++;
+
+
+if(score%300===0)
+
+speed+=0.5;
+
+
+
+scoreText.textContent=
+Math.floor(score/10);
 
 
 
@@ -183,7 +306,16 @@ draw();
 function draw(){
 
 
+// player glow
+
+
+ctx.shadowBlur=20;
+
+ctx.shadowColor="#00ff99";
+
+
 ctx.fillStyle="#00ff99";
+
 
 ctx.fillRect(
 
@@ -191,31 +323,92 @@ player.x,
 
 player.y,
 
-player.width,
+player.size,
 
-player.height
+player.size
 
 );
 
+
+ctx.shadowBlur=0;
+
+
+
+// eyes
+
+
+ctx.fillStyle="black";
+
+
+ctx.fillRect(
+
+player.x+22,
+
+player.y+8,
+
+5,
+
+5
+
+);
+
+
+
+ctx.fillRect(
+
+player.x+22,
+
+player.y+22,
+
+5,
+
+5
+
+);
+
+
+
+
+
+// obstacles
+
+
+obstacles.forEach(ob=>{
+
+
+ctx.shadowBlur=20;
+
+ctx.shadowColor="#ff3366";
 
 
 ctx.fillStyle="#ff3366";
 
+
 ctx.fillRect(
 
-obstacle.x,
+ob.x,
 
-obstacle.y,
+ob.y,
 
-obstacle.width,
+ob.width,
 
-obstacle.height
+ob.height
 
 );
 
 
+});
+
+
+ctx.shadowBlur=0;
+
+
+
+// ground
+
 
 ctx.fillStyle="#00eaff";
+
 
 ctx.fillRect(
 
@@ -223,14 +416,72 @@ ctx.fillRect(
 
 220,
 
-canvas.width,
+500,
 
 3
 
 );
 
 
+
+
+// particles
+
+
+particles.forEach(p=>{
+
+
+ctx.fillStyle="#00ff99";
+
+
+ctx.fillRect(
+
+p.x,
+
+p.y,
+
+4,
+
+4
+
+);
+
+
+});
+
+
 }
+
+
+
+
+
+function createParticles(x,y){
+
+
+for(let i=0;i<10;i++){
+
+
+particles.push({
+
+x:x,
+
+y:y,
+
+dx:(Math.random()-0.5)*5,
+
+dy:(Math.random()-0.5)*5,
+
+life:30
+
+});
+
+
+}
+
+
+}
+
 
 
 
@@ -240,9 +491,9 @@ function gameOver(){
 
 running=false;
 
-clearInterval(loop);
 
-message.textContent="Game Over";
+message.textContent=
+"Game Over 🚀";
 
 
 }
@@ -253,25 +504,24 @@ message.textContent="Game Over";
 
 document.addEventListener(
 "keydown",
-event=>{
+e=>{
 
-if(event.code==="Space"){
+
+if(e.code==="Space")
 
 jump();
 
-}
 
 });
+
+
 
 
 
 canvas.addEventListener(
 "touchstart",
-()=>{
-
-jump();
-
-});
+jump
+);
 
 
 
