@@ -15,39 +15,69 @@ const box = 20;
 let snake;
 let food;
 let direction;
-let score;
+let nextDirection;
+
+let score = 0;
+
 let gameLoop;
+
+let speed = 120;
+
 let running = false;
 
 
 
 function startGame(){
 
+
     snake = [
+
         {
-            x: 200,
-            y: 200
+            x:200,
+            y:200
+        },
+
+        {
+            x:180,
+            y:200
+        },
+
+        {
+            x:160,
+            y:200
         }
+
     ];
 
 
-    food = createFood();
-
-
     direction = "RIGHT";
+    nextDirection = "RIGHT";
+
 
     score = 0;
+
+    speed = 120;
+
 
     scoreText.textContent = score;
 
     message.textContent = "";
+
+
+    food = createFood();
+
 
     running = true;
 
 
     clearInterval(gameLoop);
 
-    gameLoop = setInterval(draw, 120);
+
+    gameLoop = setInterval(
+        update,
+        speed
+    );
+
 
 }
 
@@ -55,71 +85,31 @@ function startGame(){
 
 function createFood(){
 
+
     return {
 
-        x: Math.floor(Math.random() * 20) * box,
+        x:
+        Math.floor(Math.random()*20)*box,
 
-        y: Math.floor(Math.random() * 20) * box
+        y:
+        Math.floor(Math.random()*20)*box
 
     };
+
 
 }
 
 
 
-function draw(){
+function update(){
+
 
     if(!running)
         return;
 
 
 
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-
-
-    // draw snake
-
-   snake.forEach((part,index)=>{
-
-    if(index===0){
-
-        ctx.fillStyle="#00ff99";
-
-    }
-    else{
-
-        ctx.fillStyle="#00eaff";
-
-    }
-
-
-    ctx.fillRect(
-        part.x,
-        part.y,
-        box,
-        box
-    );
-
-});
-
-
-    // draw food
-
-    ctx.fillStyle = "#ff3366";
-
-
-    ctx.fillRect(
-        food.x,
-        food.y,
-        box,
-        box
-    );
+    direction = nextDirection;
 
 
 
@@ -133,40 +123,54 @@ function draw(){
 
 
 
-    if(direction === "LEFT")
-        head.x -= box;
-
-
-    if(direction === "RIGHT")
+    if(direction==="RIGHT")
         head.x += box;
 
 
-    if(direction === "UP")
+    if(direction==="LEFT")
+        head.x -= box;
+
+
+    if(direction==="UP")
         head.y -= box;
 
 
-    if(direction === "DOWN")
+    if(direction==="DOWN")
         head.y += box;
 
 
 
-    // collision
 
-   if(head.x < 0)
-    head.x = canvas.width - box;
+    // wall teleport
 
 
-if(head.x >= canvas.width)
-    head.x = 0;
+    if(head.x < 0)
+        head.x = canvas.width - box;
 
 
-if(head.y < 0)
-    head.y = canvas.height - box;
+    if(head.x >= canvas.width)
+        head.x = 0;
 
 
-if(head.y >= canvas.height)
-    head.y = 0;
+    if(head.y < 0)
+        head.y = canvas.height - box;
 
+
+    if(head.y >= canvas.height)
+        head.y = 0;
+
+
+
+
+    // hit own body
+
+
+    if(
+        snake.some(
+            part =>
+            part.x === head.x &&
+            part.y === head.y
+        )
     ){
 
         endGame();
@@ -181,67 +185,321 @@ if(head.y >= canvas.height)
 
 
 
-    // eating food
+    // eat food
+
 
     if(
-
         head.x === food.x &&
         head.y === food.y
-
     ){
+
 
         score++;
 
+
         scoreText.textContent = score;
+
 
         food = createFood();
 
-    }
 
+
+        // increase speed
+
+
+        if(score % 5 === 0 && speed > 50){
+
+
+            speed -= 10;
+
+
+            clearInterval(gameLoop);
+
+
+            gameLoop = setInterval(
+                update,
+                speed
+            );
+
+
+        }
+
+
+    }
     else{
 
+
         snake.pop();
+
+
+    }
+
+
+
+    draw();
+
+
+}
+
+
+
+
+
+function draw(){
+
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+
+    // food
+
+
+    ctx.fillStyle="#ff3366";
+
+
+    ctx.fillRect(
+
+        food.x,
+
+        food.y,
+
+        box,
+
+        box
+
+    );
+
+
+
+    // snake
+
+
+    snake.forEach(
+        (part,index)=>{
+
+
+            if(index===0){
+
+
+                drawHead(part);
+
+
+            }
+            else{
+
+
+                ctx.fillStyle="#00eaff";
+
+
+                ctx.fillRect(
+
+                    part.x,
+
+                    part.y,
+
+                    box,
+
+                    box
+
+                );
+
+
+            }
+
+
+        }
+    );
+
+
+}
+
+
+
+
+function drawHead(head){
+
+
+    ctx.fillStyle="#00ff99";
+
+
+    ctx.fillRect(
+
+        head.x,
+
+        head.y,
+
+        box,
+
+        box
+
+    );
+
+
+
+    // eyes
+
+
+    ctx.fillStyle="black";
+
+
+
+    let eyeSize = 4;
+
+
+
+    if(direction==="RIGHT"){
+
+        ctx.fillRect(
+            head.x+13,
+            head.y+4,
+            eyeSize,
+            eyeSize
+        );
+
+
+        ctx.fillRect(
+            head.x+13,
+            head.y+12,
+            eyeSize,
+            eyeSize
+        );
+
+    }
+
+
+
+    if(direction==="LEFT"){
+
+
+        ctx.fillRect(
+            head.x+3,
+            head.y+4,
+            eyeSize,
+            eyeSize
+        );
+
+
+        ctx.fillRect(
+            head.x+3,
+            head.y+12,
+            eyeSize,
+            eyeSize
+        );
+
+
+    }
+
+
+
+    if(direction==="UP"){
+
+
+        ctx.fillRect(
+            head.x+4,
+            head.y+3,
+            eyeSize,
+            eyeSize
+        );
+
+
+        ctx.fillRect(
+            head.x+12,
+            head.y+3,
+            eyeSize,
+            eyeSize
+        );
+
+
+    }
+
+
+
+    if(direction==="DOWN"){
+
+
+        ctx.fillRect(
+            head.x+4,
+            head.y+13,
+            eyeSize,
+            eyeSize
+        );
+
+
+        ctx.fillRect(
+            head.x+12,
+            head.y+13,
+            eyeSize,
+            eyeSize
+        );
+
 
     }
 
 
 }
+
 
 
 
 function endGame(){
 
-    running = false;
+
+    running=false;
+
 
     clearInterval(gameLoop);
 
+
     message.textContent =
-    "Game Over! Refresh or start again.";
+    "Game Over!";
+
 
 }
+
 
 
 
 
 document.addEventListener(
 "keydown",
-event=>{
+e=>{
 
 
-    if(event.key === "ArrowLeft" && direction !== "RIGHT")
-        direction = "LEFT";
+    if(
+        e.key==="ArrowRight" &&
+        direction!=="LEFT"
+    )
+        nextDirection="RIGHT";
 
 
-    if(event.key === "ArrowRight" && direction !== "LEFT")
-        direction = "RIGHT";
+
+    if(
+        e.key==="ArrowLeft" &&
+        direction!=="RIGHT"
+    )
+        nextDirection="LEFT";
 
 
-    if(event.key === "ArrowUp" && direction !== "DOWN")
-        direction = "UP";
+
+    if(
+        e.key==="ArrowUp" &&
+        direction!=="DOWN"
+    )
+        nextDirection="UP";
 
 
-    if(event.key === "ArrowDown" && direction !== "UP")
-        direction = "DOWN";
+
+    if(
+        e.key==="ArrowDown" &&
+        direction!=="UP"
+    )
+        nextDirection="DOWN";
 
 
 });
@@ -249,41 +507,41 @@ event=>{
 
 
 
-// Mobile controls
 
-upButton.onclick = ()=>{
+upButton.onclick=()=>{
 
-    if(direction !== "DOWN")
-        direction = "UP";
-
-};
-
-
-downButton.onclick = ()=>{
-
-    if(direction !== "UP")
-        direction = "DOWN";
-
-};
-
-
-leftButton.onclick = ()=>{
-
-    if(direction !== "RIGHT")
-        direction = "LEFT";
-
-};
-
-
-rightButton.onclick = ()=>{
-
-    if(direction !== "LEFT")
-        direction = "RIGHT";
+    if(direction!=="DOWN")
+        nextDirection="UP";
 
 };
 
 
 
-// Start automatically
+downButton.onclick=()=>{
+
+    if(direction!=="UP")
+        nextDirection="DOWN";
+
+};
+
+
+
+leftButton.onclick=()=>{
+
+    if(direction!=="RIGHT")
+        nextDirection="LEFT";
+
+};
+
+
+
+rightButton.onclick=()=>{
+
+    if(direction!=="LEFT")
+        nextDirection="RIGHT";
+
+};
+
+
 
 startGame();
