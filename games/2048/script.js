@@ -15,6 +15,9 @@ let board;
 
 let score=0;
 
+let touchStartX = 0;
+
+let touchStartY = 0;
 
 
 function start(){
@@ -304,9 +307,97 @@ message.textContent=
 
 }
 
+// Mobile swipe controls
+
+boardElement.addEventListener(
+"touchstart",
+e=>{
+
+    touchStartX = e.touches[0].clientX;
+
+    touchStartY = e.touches[0].clientY;
+
+},
+{
+    passive:true
+}
+);
+
+
+
+boardElement.addEventListener(
+"touchend",
+e=>{
+
+
+    let touchEndX =
+    e.changedTouches[0].clientX;
+
+
+    let touchEndY =
+    e.changedTouches[0].clientY;
+
+
+
+    let diffX =
+    touchEndX - touchStartX;
+
+
+    let diffY =
+    touchEndY - touchStartY;
+
+
+
+    // horizontal swipe
+
+    if(Math.abs(diffX) > Math.abs(diffY)){
+
+
+        if(diffX > 50){
+
+            moveRight();
+
+        }
+
+
+        if(diffX < -50){
+
+            moveLeft();
+
+        }
+
+
+    }
+
+
+    // vertical swipe
+
+    else{
+
+
+        if(diffY > 50){
+
+            moveDown();
+
+        }
+
+
+        if(diffY < -50){
+
+            moveUp();
+
+        }
+
+
+    }
+
+
+});
 
 
 restart.onclick=start;
 
 
 start();
+
+
