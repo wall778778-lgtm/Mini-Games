@@ -598,8 +598,4 @@ jump
 
 
 
-restartButton.onclick=startGame;
 
-
-
-startGame();
