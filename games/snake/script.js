@@ -85,20 +85,28 @@ function draw(){
 
     // draw snake
 
-    ctx.fillStyle = "#00eaff";
+   snake.forEach((part,index)=>{
+
+    if(index===0){
+
+        ctx.fillStyle="#00ff99";
+
+    }
+    else{
+
+        ctx.fillStyle="#00eaff";
+
+    }
 
 
-    snake.forEach(part=>{
+    ctx.fillRect(
+        part.x,
+        part.y,
+        box,
+        box
+    );
 
-        ctx.fillRect(
-            part.x,
-            part.y,
-            box,
-            box
-        );
-
-    });
-
+});
 
 
     // draw food
@@ -144,16 +152,20 @@ function draw(){
 
     // collision
 
-    if(
+   if(head.x < 0)
+    head.x = canvas.width - box;
 
-        head.x < 0 ||
-        head.y < 0 ||
-        head.x >= canvas.width ||
-        head.y >= canvas.height ||
-        snake.some(part =>
-            part.x === head.x &&
-            part.y === head.y
-        )
+
+if(head.x >= canvas.width)
+    head.x = 0;
+
+
+if(head.y < 0)
+    head.y = canvas.height - box;
+
+
+if(head.y >= canvas.height)
+    head.y = 0;
 
     ){
 
