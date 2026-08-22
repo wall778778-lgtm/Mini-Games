@@ -463,7 +463,10 @@ function endGame(){
 }
 
 
+const restartButton =
+document.getElementById("restart");
 
+restartButton.onclick = startGame;
 
 
 document.addEventListener(
