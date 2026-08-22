@@ -1,152 +1,178 @@
 const canvas = document.getElementById("game");
+
 const ctx = canvas.getContext("2d");
 
+
 const scoreText = document.getElementById("score");
-const restart = document.getElementById("restart");
+
+const restartButton = document.getElementById("restart");
+
 const message = document.getElementById("message");
 
 
+
 let player;
+
 let obstacle;
 
-let score = 0;
+let score;
 
-let gameLoop;
+let running;
 
-let running = false;
+let loop;
 
 
 
 function startGame(){
 
-    player = {
 
-        x:80,
-        y:180,
-        width:30,
-        height:30,
-        velocity:0,
-        jumping:false
+player = {
 
-    };
+x:80,
 
+y:180,
 
-    obstacle = {
+width:30,
 
-        x:500,
-        y:190,
-        width:30,
-        height:40
+height:30,
 
-    };
+velocity:0,
+
+jumping:false
+
+};
 
 
-    score = 0;
 
-    scoreText.textContent = score;
+obstacle = {
 
-    message.textContent = "";
+x:500,
 
-    running = true;
+y:190,
+
+width:30,
+
+height:40
+
+};
 
 
-    clearInterval(gameLoop);
 
-    gameLoop = setInterval(update,16);
+score=0;
+
+scoreText.textContent=score;
+
+
+message.textContent="";
+
+
+running=true;
+
+
+clearInterval(loop);
+
+
+loop=setInterval(update,16);
+
 
 }
+
+
 
 
 
 function jump(){
 
-    if(player.jumping === false){
 
-        player.velocity = -11;
+if(player.jumping===false){
 
-        player.jumping = true;
+player.velocity=-11;
 
-    }
+player.jumping=true;
+
+}
+
 
 }
 
 
 
+
+
 function update(){
 
-    if(!running)
-        return;
+
+if(!running)
+return;
 
 
 
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
+ctx.clearRect(
+0,
+0,
+canvas.width,
+canvas.height
+);
 
 
 
-    // gravity
+player.velocity+=0.5;
 
-    player.velocity += 0.5;
-
-    player.y += player.velocity;
+player.y+=player.velocity;
 
 
 
-    if(player.y >= 180){
+if(player.y>=180){
 
-        player.y = 180;
+player.y=180;
 
-        player.velocity = 0;
+player.velocity=0;
 
-        player.jumping = false;
+player.jumping=false;
 
-    }
-
-
-
-    // obstacle movement
-
-    obstacle.x -= 6;
+}
 
 
 
-    if(obstacle.x < -40){
-
-        obstacle.x = canvas.width + 50;
-
-        score++;
-
-        scoreText.textContent = score;
-
-    }
+obstacle.x-=6;
 
 
 
-    // collision
+if(obstacle.x<-40){
 
-    if(
+obstacle.x=520;
 
-        player.x < obstacle.x + obstacle.width &&
+score++;
 
-        player.x + player.width > obstacle.x &&
+scoreText.textContent=score;
 
-        player.y < obstacle.y + obstacle.height &&
-
-        player.y + player.height > obstacle.y
-
-    ){
-
-        gameOver();
-
-    }
+}
 
 
 
-    draw();
+
+if(
+
+player.x < obstacle.x + obstacle.width &&
+
+player.x + player.width > obstacle.x &&
+
+player.y < obstacle.y + obstacle.height &&
+
+player.y + player.height > obstacle.y
+
+){
+
+gameOver();
+
+}
+
+
+
+
+
+draw();
+
 
 }
 
@@ -157,57 +183,51 @@ function update(){
 function draw(){
 
 
-    // player
+ctx.fillStyle="#00ff99";
 
-    ctx.fillStyle = "#00ff99";
+ctx.fillRect(
 
-    ctx.fillRect(
+player.x,
 
-        player.x,
+player.y,
 
-        player.y,
+player.width,
 
-        player.width,
+player.height
 
-        player.height
-
-    );
+);
 
 
 
-    // obstacle
+ctx.fillStyle="#ff3366";
 
-    ctx.fillStyle = "#ff3366";
+ctx.fillRect(
 
-    ctx.fillRect(
+obstacle.x,
 
-        obstacle.x,
+obstacle.y,
 
-        obstacle.y,
+obstacle.width,
 
-        obstacle.width,
+obstacle.height
 
-        obstacle.height
-
-    );
+);
 
 
 
-    // ground
+ctx.fillStyle="#00eaff";
 
-    ctx.fillStyle = "#00eaff";
+ctx.fillRect(
 
-    ctx.fillRect(
+0,
 
-        0,
+220,
 
-        220,
+canvas.width,
 
-        canvas.width,
+3
 
-        3
-
-    );
+);
 
 
 }
@@ -217,11 +237,13 @@ function draw(){
 
 function gameOver(){
 
-    running = false;
 
-    clearInterval(gameLoop);
+running=false;
 
-    message.textContent = "Game Over";
+clearInterval(loop);
+
+message.textContent="Game Over";
+
 
 }
 
@@ -229,39 +251,31 @@ function gameOver(){
 
 
 
-// PC controls
-
 document.addEventListener(
 "keydown",
 event=>{
 
-    if(event.code === "Space"){
+if(event.code==="Space"){
 
-        jump();
+jump();
 
-    }
+}
 
 });
 
 
-
-
-// Phone controls
 
 canvas.addEventListener(
 "touchstart",
 ()=>{
 
-    jump();
+jump();
 
 });
 
 
 
-
-// Restart
-
-restart.onclick = startGame;
+restartButton.onclick=startGame;
 
 
 
