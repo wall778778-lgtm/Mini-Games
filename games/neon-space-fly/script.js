@@ -2,6 +2,9 @@ const scene = new THREE.Scene();
 
 scene.background = new THREE.Color(0x020414);
 
+const loader = new THREE.GLTFLoader();
+
+let shipLoaded = false;
 
 
 // CAMERA
@@ -61,46 +64,54 @@ scene.add(light);
 
 
 
-// SHIP GROUP
-
-let ship =
-new THREE.Group();
+let ship = new THREE.Group();
 
 
+loader.load(
+
+"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/FlightHelmet/glTF-Binary/FlightHelmet.glb",
+
+function(gltf){
+
+    ship = gltf.scene;
 
 
+    ship.scale.set(
+        0.8,
+        0.8,
+        0.8
+    );
 
-// ship body
 
-let body =
-new THREE.Mesh(
+    ship.rotation.y =
+    Math.PI;
 
-new THREE.ConeGeometry(
-0.55,
-1.8,
-6
-),
 
-new THREE.MeshStandardMaterial({
+    ship.position.z=0;
 
-color:0x00aaff,
 
-metalness:0.8,
+    scene.add(ship);
 
-roughness:0.2,
 
-emissive:0x003366
+    shipLoaded=true;
 
-})
+
+},
+
+undefined,
+
+
+function(error){
+
+    console.log(
+        "Model loading failed",
+        error
+    );
+
+}
+
 
 );
-
-
-body.rotation.x =
-Math.PI/2;
-
-
-ship.add(body);
 
 
 
