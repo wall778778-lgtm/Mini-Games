@@ -179,12 +179,29 @@ function update(){
 
 function draw(){
 
-
     ctx.clearRect(
         0,
         0,
         canvas.width,
         canvas.height
+    );
+
+
+    // camera follows tower
+
+    if(current.y < 200){
+
+        cameraY = 200 - current.y;
+
+    }
+
+
+
+    ctx.save();
+
+    ctx.translate(
+        0,
+        cameraY
     );
 
 
@@ -203,7 +220,6 @@ function draw(){
         index % 2 === 0
         ? "#00eaff"
         : "#8a2be2";
-
 
 
         ctx.fillRect(
@@ -251,11 +267,12 @@ function draw(){
 
 
 
+    ctx.restore();
+
+
     ctx.shadowBlur=0;
 
-
 }
-
 
 
 
