@@ -1,7 +1,10 @@
 const scene = new THREE.Scene();
 
-scene.background = new THREE.Color(0x050820);
+scene.background = new THREE.Color(0x020414);
 
+
+
+// CAMERA
 
 const camera = new THREE.PerspectiveCamera(
     75,
@@ -10,55 +13,40 @@ const camera = new THREE.PerspectiveCamera(
     1000
 );
 
+camera.position.z = 8;
 
-camera.position.set(0, 0, 8);
 
 
+// RENDERER
 
 const renderer = new THREE.WebGLRenderer({
     antialias:true
 });
-
 
 renderer.setSize(
     window.innerWidth,
     window.innerHeight
 );
 
+renderer.shadowMap.enabled = true;
 
 document.body.appendChild(renderer.domElement);
 
 
 
-let score = 0;
 
-let gameOver = false;
+// LIGHTS
 
+const ambient = new THREE.AmbientLight(
+    0x555555
+);
 
-const scoreText =
-document.getElementById("score");
-
-const message =
-document.getElementById("message");
+scene.add(ambient);
 
 
-
-let keys = {};
-
-let ship;
-
-let asteroids=[];
-
-let particles=[];
-
-
-
-// LIGHT
-
-const light =
-new THREE.PointLight(
+const light = new THREE.PointLight(
     0xffffff,
-    5
+    4
 );
 
 light.position.set(
@@ -71,51 +59,151 @@ scene.add(light);
 
 
 
-const ambient =
-new THREE.AmbientLight(
-    0x555555
-);
-
-scene.add(ambient);
 
 
+// SHIP GROUP
+
+let ship =
+new THREE.Group();
 
 
-// SHIP
 
 
-const shipGeometry =
+
+// ship body
+
+let body =
+new THREE.Mesh(
+
 new THREE.ConeGeometry(
-    0.6,
-    1.8,
-    4
-);
+0.55,
+1.8,
+6
+),
 
-
-const shipMaterial =
 new THREE.MeshStandardMaterial({
 
-    color:0x00ffff,
+color:0x00aaff,
 
-    emissive:0x0099ff,
+metalness:0.8,
 
-    emissiveIntensity:2
+roughness:0.2,
+
+emissive:0x003366
+
+})
+
+);
+
+
+body.rotation.x =
+Math.PI/2;
+
+
+ship.add(body);
+
+
+
+
+
+// cockpit
+
+let cockpit =
+new THREE.Mesh(
+
+new THREE.SphereGeometry(
+0.25,
+16,
+16
+),
+
+new THREE.MeshStandardMaterial({
+
+color:0x88ffff,
+
+transparent:true,
+
+opacity:0.8
+
+})
+
+);
+
+
+cockpit.position.z=-0.2;
+
+
+ship.add(cockpit);
+
+
+
+
+
+// wings
+
+let wingMaterial =
+new THREE.MeshStandardMaterial({
+
+color:0x222244,
+
+metalness:1
 
 });
 
 
-ship =
+
+let wing1 =
 new THREE.Mesh(
-    shipGeometry,
-    shipMaterial
+
+new THREE.BoxGeometry(
+1.6,
+0.05,
+0.5
+),
+
+wingMaterial
+
 );
 
 
-ship.rotation.x =
-Math.PI/2;
+wing1.position.y=-0.1;
 
 
-ship.position.z=0;
+ship.add(wing1);
+
+
+
+
+
+// engine flame
+
+let flame =
+new THREE.Mesh(
+
+new THREE.ConeGeometry(
+0.18,
+0.8,
+12
+),
+
+new THREE.MeshBasicMaterial({
+
+color:0xff6600
+
+})
+
+);
+
+
+flame.rotation.x=
+-Math.PI/2;
+
+
+flame.position.z=0.9;
+
+
+ship.add(flame);
+
 
 
 scene.add(ship);
@@ -123,158 +211,206 @@ scene.add(ship);
 
 
 
+
+
+
 // STARS
 
-
-for(let i=0;i<300;i++){
-
-
-    const star =
-    new THREE.Mesh(
-
-        new THREE.SphereGeometry(
-            0.03
-        ),
-
-        new THREE.MeshBasicMaterial({
-            color:0xffffff
-        })
-
-    );
+for(let i=0;i<400;i++){
 
 
-    star.position.set(
+let star =
+new THREE.Mesh(
 
-        (Math.random()-0.5)*50,
+new THREE.SphereGeometry(
+0.025
+),
 
-        (Math.random()-0.5)*50,
+new THREE.MeshBasicMaterial({
 
-        -Math.random()*80
+color:0xffffff
 
-    );
+})
 
-
-    scene.add(star);
-
-}
+);
 
 
 
+star.position.set(
 
-// ASTEROIDS
+(Math.random()-0.5)*60,
 
+(Math.random()-0.5)*60,
 
-function spawnAsteroid(){
+-Math.random()*80
 
-
-    if(gameOver)
-        return;
-
-
-
-    const asteroid =
-    new THREE.Mesh(
-
-        new THREE.IcosahedronGeometry(
-            Math.random()*0.5+0.3
-        ),
+);
 
 
-        new THREE.MeshStandardMaterial({
-
-            color:0xff3366,
-
-            emissive:0x330000
-
-        })
-
-    );
-
-
-
-    asteroid.position.set(
-
-        (Math.random()-0.5)*8,
-
-        (Math.random()-0.5)*5,
-
-        -30
-
-    );
-
-
-
-    scene.add(asteroid);
-
-
-    asteroids.push(asteroid);
-
-
-
-    setTimeout(
-        spawnAsteroid,
-        1000
-    );
+scene.add(star);
 
 
 }
 
 
 
-spawnAsteroid();
 
 
 
+let asteroids=[];
+
+
+let score=0;
+
+
+let gameOver=false;
+
+
+let keys={};
+
+
+
+const scoreText =
+document.getElementById("score");
+
+
+const message =
+document.getElementById("message");
+
+
+
+
+
+
+// CREATE ASTEROID
+
+
+function createAsteroid(){
+
+
+if(gameOver)
+return;
+
+
+
+let geometry =
+new THREE.IcosahedronGeometry(
+Math.random()*0.5+0.4,
+1
+);
+
+
+
+let material =
+new THREE.MeshStandardMaterial({
+
+color:0x777777,
+
+roughness:1
+
+});
+
+
+
+let asteroid =
+new THREE.Mesh(
+geometry,
+material
+);
+
+
+
+asteroid.position.set(
+
+(Math.random()-0.5)*8,
+
+(Math.random()-0.5)*5,
+
+-30
+
+);
+
+
+
+asteroid.rotation.set(
+
+Math.random()*3,
+
+Math.random()*3,
+
+Math.random()*3
+
+);
+
+
+
+scene.add(asteroid);
+
+
+asteroids.push(asteroid);
+
+
+
+setTimeout(
+createAsteroid,
+900
+);
+
+
+}
+
+
+
+createAsteroid();
+
+
+
+
+
+
+// MOVEMENT
 
 
 function moveShip(){
 
 
-    if(keys.left)
-
-        ship.position.x-=0.1;
-
-
-    if(keys.right)
-
-        ship.position.x+=0.1;
+if(keys.left)
+ship.position.x-=0.08;
 
 
-    if(keys.up)
+if(keys.right)
+ship.position.x+=0.08;
 
-        ship.position.y+=0.1;
+
+if(keys.up)
+ship.position.y+=0.08;
 
 
-    if(keys.down)
-
-        ship.position.y-=0.1;
+if(keys.down)
+ship.position.y-=0.08;
 
 
 
-    // limits
+ship.position.x =
+THREE.MathUtils.clamp(
+ship.position.x,
+-4,
+4
+);
 
 
-    ship.position.x =
-    Math.max(
-        -4,
-        Math.min(
-            4,
-            ship.position.x
-        )
-    );
+ship.position.y =
+THREE.MathUtils.clamp(
+ship.position.y,
+-3,
+3
+);
 
-
-    ship.position.y =
-    Math.max(
-        -3,
-        Math.min(
-            3,
-            ship.position.y
-        )
-    );
 
 
 }
+
+
 
 
 
@@ -290,80 +426,88 @@ requestAnimationFrame(animate);
 if(!gameOver){
 
 
-    moveShip();
+moveShip();
 
 
 
-    asteroids.forEach(
-    (asteroid,index)=>{
-
-
-        asteroid.position.z +=0.3;
-
-
-        asteroid.rotation.x+=0.02;
-
-        asteroid.rotation.y+=0.03;
+flame.scale.y =
+1+Math.random()*0.5;
 
 
 
-
-        if(
-        ship.position.distanceTo(
-            asteroid.position
-        ) < 0.8
-        ){
+asteroids.forEach(
+(a,index)=>{
 
 
-            gameOver=true;
+a.position.z+=0.35;
 
 
-            message.textContent =
-            "Game Over 🚀";
+a.rotation.x+=0.02;
 
-
-        }
+a.rotation.y+=0.03;
 
 
 
 
-        if(
-        asteroid.position.z>5
-        ){
+if(
+ship.position.distanceTo(a.position)
+<0.9
+){
 
+gameOver=true;
 
-            scene.remove(asteroid);
-
-            asteroids.splice(
-                index,
-                1
-            );
-
-
-            score++;
-
-            scoreText.textContent=
-            score;
-
-
-        }
-
-
-
-    });
+message.textContent=
+"💥 Destroyed!";
 
 
 }
+
+
+
+
+if(a.position.z>5){
+
+
+scene.remove(a);
+
+
+asteroids.splice(
+index,
+1
+);
+
+
+score++;
+
+scoreText.textContent=
+score;
+
+
+}
+
+
+
+});
+
+
+}
+
 
 
 
 renderer.render(
-    scene,
-    camera
+scene,
+camera
 );
 
 
+
 }
+
+
+
+
+
 
 
 
@@ -392,8 +536,8 @@ if(e.key==="ArrowDown")
 keys.down=true;
 
 
-
 });
+
 
 
 
@@ -425,8 +569,8 @@ keys.down=false;
 
 
 
-// PHONE CONTROL
 
+// PHONE
 
 window.addEventListener(
 "touchmove",
@@ -462,7 +606,6 @@ passive:true
 
 
 
-// RESIZE
 
 
 window.addEventListener(
@@ -471,7 +614,7 @@ window.addEventListener(
 
 
 camera.aspect =
-window.innerWidth /
+window.innerWidth/
 window.innerHeight;
 
 
