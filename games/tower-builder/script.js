@@ -15,6 +15,8 @@ let speed = 3;
 let score = 0;
 let gameOver = false;
 
+let cameraY = 0;
+
 
 
 function start(){
@@ -47,6 +49,8 @@ function start(){
 
     score = 0;
 
+    cameraY = 0;
+
     gameOver = false;
 
 
@@ -60,7 +64,9 @@ function start(){
 
 
 
+
 function drop(){
+
 
     if(gameOver)
         return;
@@ -95,15 +101,18 @@ function drop(){
 
     if(overlap <= 0){
 
+
         gameOver = true;
+
 
         message.textContent =
         "Tower collapsed 💥";
 
+
         return;
 
-    }
 
+    }
 
 
 
@@ -123,11 +132,14 @@ function drop(){
 
     score++;
 
-    scoreText.textContent = score;
+
+    scoreText.textContent =
+    score;
 
 
 
-    // next moving block
+
+    // next block
 
     current = {
 
@@ -143,6 +155,9 @@ function drop(){
 
 
 }
+
+
+
 
 
 
@@ -177,21 +192,33 @@ function update(){
 
 
 
+
+
+
+
 function draw(){
 
+
     ctx.clearRect(
+
         0,
+
         0,
+
         canvas.width,
+
         canvas.height
+
     );
+
 
 
     // camera follows tower
 
     if(current.y < 200){
 
-        cameraY = 200 - current.y;
+        cameraY =
+        200 - current.y;
 
     }
 
@@ -199,27 +226,37 @@ function draw(){
 
     ctx.save();
 
+
+
     ctx.translate(
+
         0,
+
         cameraY
+
     );
 
 
 
-    // placed blocks
+
+    // Draw placed blocks
 
     blocks.forEach((block,index)=>{
 
 
         ctx.shadowBlur = 20;
 
-        ctx.shadowColor = "#00eaff";
+        ctx.shadowColor =
+        "#00eaff";
 
 
         ctx.fillStyle =
         index % 2 === 0
-        ? "#00eaff"
-        : "#8a2be2";
+        ?
+        "#00eaff"
+        :
+        "#8a2be2";
+
 
 
         ctx.fillRect(
@@ -240,14 +277,21 @@ function draw(){
 
 
 
+
     // moving block
 
     if(!gameOver){
 
 
-        ctx.shadowColor="#00ff99";
+        ctx.shadowBlur = 20;
 
-        ctx.fillStyle="#00ff99";
+        ctx.shadowColor =
+        "#00ff99";
+
+
+        ctx.fillStyle =
+        "#00ff99";
+
 
 
         ctx.fillRect(
@@ -270,21 +314,32 @@ function draw(){
     ctx.restore();
 
 
-    ctx.shadowBlur=0;
+
+    ctx.shadowBlur = 0;
+
 
 }
 
 
 
 
-function loop(){
+
+
+
+
+
+function gameLoop(){
+
 
     update();
 
     draw();
 
 
-    requestAnimationFrame(loop);
+    requestAnimationFrame(
+        gameLoop
+    );
+
 
 }
 
@@ -313,4 +368,4 @@ restart.onclick = start;
 
 start();
 
-loop();
+gameLoop();
