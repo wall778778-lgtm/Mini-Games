@@ -1,39 +1,25 @@
-const canvas =
-document.getElementById("game");
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
 
-const ctx =
-canvas.getContext("2d");
-
-
-const scoreText =
-document.getElementById("score");
-
-const message =
-document.getElementById("message");
-
-const restart =
-document.getElementById("restart");
+const scoreText = document.getElementById("score");
+const message = document.getElementById("message");
+const restart = document.getElementById("restart");
 
 
-
-let blocks=[];
-
+let blocks = [];
 let current;
 
-let direction=1;
+let direction = 1;
+let speed = 3;
 
-let speed=3;
-
-let score=0;
-
-let gameOver=false;
+let score = 0;
+let gameOver = false;
 
 
 
 function start(){
 
-    blocks=[];
-
+    blocks = [];
 
     blocks.push({
 
@@ -45,136 +31,115 @@ function start(){
     });
 
 
-
-    current={
+    current = {
 
         x:0,
-
         y:520,
-
         width:200,
-
         height:40
 
     };
 
 
-    direction=1;
+    direction = 1;
 
-    speed=3; // reset speed every restart
+    speed = 3;
+
+    score = 0;
+
+    gameOver = false;
 
 
-    score=0;
+    scoreText.textContent = score;
 
-    gameOver=false;
-
-
-    scoreText.textContent=0;
-
-    message.textContent="";
-
+    message.textContent = "";
 
 }
+
 
 
 
 
 function drop(){
 
-
-if(gameOver)
-return;
-
-
-
-let last =
-blocks[blocks.length-1];
+    if(gameOver)
+        return;
 
 
 
-let left =
-Math.max(
-current.x,
-last.x
-);
+    let last =
+    blocks[blocks.length - 1];
 
 
 
-let right =
-Math.min(
-current.x+current.width,
-last.x+last.width
-);
+    let left =
+    Math.max(
+        current.x,
+        last.x
+    );
 
 
 
-let overlap =
-right-left;
+    let right =
+    Math.min(
+        current.x + current.width,
+        last.x + last.width
+    );
 
 
 
-if(overlap<=0){
-
-gameOver=true;
-
-message.textContent=
-"Tower collapsed 💥";
-
-return;
-
-}
+    let overlap =
+    right - left;
 
 
 
+    if(overlap <= 0){
 
-blocks.push({
+        gameOver = true;
 
-x:left,
+        message.textContent =
+        "Tower collapsed 💥";
 
-y:last.y-40,
+        return;
 
-width:overlap,
-
-height:40
-
-});
+    }
 
 
 
-score++;
 
+    blocks.push({
 
-scoreText.textContent=score;
+        x:left,
 
+        y:last.y - 40,
 
+        width:overlap,
 
-// create next block above
+        height:40
 
-current={
-
-x:0,
-
-y:last.y-80,
-
-width:overlap,
-
-height:40
-
-};
+    });
 
 
 
-}
+    score++;
+
+    scoreText.textContent = score;
 
 
-if(blocks[blocks.length-1].y<=40){
 
-message.textContent=
-"🏆 Perfect Tower!";
+    // next moving block
 
-gameOver=true;
+    current = {
 
-}
+        x:0,
+
+        y:last.y - 80,
+
+        width:overlap,
+
+        height:40
+
+    };
 
 
 }
@@ -186,26 +151,24 @@ gameOver=true;
 function update(){
 
 
-if(gameOver)
-return;
+    if(gameOver)
+        return;
 
 
 
-current.x+=
-direction*speed;
+    current.x +=
+    direction * speed;
 
 
 
-if(
-current.x+current.width>
-canvas.width ||
-current.x<0
-){
+    if(
+        current.x + current.width >= canvas.width ||
+        current.x <= 0
+    ){
 
-direction*=-1;
+        direction *= -1;
 
-}
-
+    }
 
 
 }
@@ -217,92 +180,97 @@ direction*=-1;
 function draw(){
 
 
-ctx.clearRect(
-0,
-0,
-canvas.width,
-canvas.height
-);
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+
+    // placed blocks
+
+    blocks.forEach((block,index)=>{
+
+
+        ctx.shadowBlur = 20;
+
+        ctx.shadowColor = "#00eaff";
+
+
+        ctx.fillStyle =
+        index % 2 === 0
+        ? "#00eaff"
+        : "#8a2be2";
+
+
+
+        ctx.fillRect(
+
+            block.x,
+
+            block.y,
+
+            block.width,
+
+            block.height
+
+        );
+
+
+    });
 
 
 
 
-// blocks
+    // moving block
 
-blocks.forEach((b,i)=>{
-
-
-ctx.shadowBlur=20;
-
-ctx.shadowColor="#00eaff";
+    if(!gameOver){
 
 
-ctx.fillStyle=
-i%2===0?
-"#00eaff":
-"#8a2be2";
+        ctx.shadowColor="#00ff99";
+
+        ctx.fillStyle="#00ff99";
 
 
-ctx.fillRect(
+        ctx.fillRect(
 
-b.x,
+            current.x,
 
-b.y,
+            current.y,
 
-b.width,
+            current.width,
 
-b.height
+            current.height
 
-);
+        );
 
 
-});
+    }
 
 
 
-
-// moving block
-
-
-ctx.fillStyle="#00ff99";
-
-
-ctx.fillRect(
-
-current.x,
-
-current.y,
-
-current.width,
-
-current.height
-
-);
-
-
-
-ctx.shadowBlur=0;
-
-
-
-}
-
-
-
-
-
-function animate(){
-
-
-requestAnimationFrame(animate);
-
-
-update();
-
-draw();
+    ctx.shadowBlur=0;
 
 
 }
+
+
+
+
+
+function loop(){
+
+    update();
+
+    draw();
+
+
+    requestAnimationFrame(loop);
+
+}
+
 
 
 
@@ -322,8 +290,10 @@ drop
 
 
 
-restart.onclick=start;
+restart.onclick = start;
 
 
 
 start();
+
+loop();
