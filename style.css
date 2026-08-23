@@ -538,3 +538,54 @@ footer p {
 
 
 }
+
+
+.page-content {
+
+    max-width:900px;
+
+    margin:80px auto;
+
+    padding:30px;
+
+    background:rgba(20,22,40,0.7);
+
+    border-radius:20px;
+
+    line-height:1.8;
+
+}
+
+
+.page-content h1 {
+
+    font-size:45px;
+
+    margin-bottom:30px;
+
+}
+
+
+.page-content h2 {
+
+    margin-top:35px;
+
+    margin-bottom:15px;
+
+}
+
+
+.page-content p {
+
+    color:#b7b9c8;
+
+}
+
+
+.page-content li {
+
+    margin:10px 0;
+
+    color:#b7b9c8;
+
+}
