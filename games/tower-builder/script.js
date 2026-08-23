@@ -32,56 +32,49 @@ let gameOver=false;
 
 function start(){
 
+    blocks=[];
 
-blocks=[];
 
+    blocks.push({
 
-blocks.push({
+        x:100,
+        y:560,
+        width:200,
+        height:40
 
-x:100,
-
-y:560,
-
-width:200,
-
-height:40
-
-});
+    });
 
 
 
-current={
+    current={
 
-x:0,
+        x:0,
 
-y:520,
+        y:520,
 
-width:200,
+        width:200,
 
-height:40
+        height:40
 
-};
-
-
-direction=1;
-
-speed=3;
-
-score=0;
-
-gameOver=false;
+    };
 
 
-scoreText.textContent=0;
+    direction=1;
 
-message.textContent="";
+    speed=3; // reset speed every restart
 
 
-animate();
+    score=0;
+
+    gameOver=false;
+
+
+    scoreText.textContent=0;
+
+    message.textContent="";
 
 
 }
-
 
 
 
@@ -104,6 +97,7 @@ Math.max(
 current.x,
 last.x
 );
+
 
 
 let right =
@@ -132,6 +126,7 @@ return;
 
 
 
+
 blocks.push({
 
 x:left,
@@ -145,10 +140,6 @@ height:40
 });
 
 
-current.width=overlap;
-
-current.x=left;
-
 
 score++;
 
@@ -156,8 +147,24 @@ score++;
 scoreText.textContent=score;
 
 
-speed+=0.25;
 
+// create next block above
+
+current={
+
+x:0,
+
+y:last.y-80,
+
+width:overlap,
+
+height:40
+
+};
+
+
+
+}
 
 
 if(blocks[blocks.length-1].y<=40){
