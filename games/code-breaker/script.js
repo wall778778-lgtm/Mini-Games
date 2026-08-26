@@ -1,7 +1,3 @@
-let secretCode;
-
-let attempts = 0;
-
 const input = document.getElementById("guessInput");
 const history = document.getElementById("history");
 const attemptsText = document.getElementById("attempts");
@@ -10,21 +6,25 @@ const resultCard = document.getElementById("result-card");
 const resultTitle = document.getElementById("result-title");
 const resultScore = document.getElementById("result-score");
 
+const guessButton = document.getElementById("guessButton");
+const restartButton = document.getElementById("restartButton");
 
 
-function startGame(){
+let secretCode = "";
+let attempts = 0;
+
+
+
+function startGame() {
 
     secretCode = "";
 
-    while(secretCode.length < 4){
+    while (secretCode.length < 4) {
 
-        let number =
-        Math.floor(Math.random()*10);
+        let number = Math.floor(Math.random() * 10);
 
-        if(!secretCode.includes(number)){
-
+        if (!secretCode.includes(number)) {
             secretCode += number;
-
         }
 
     }
@@ -34,9 +34,9 @@ function startGame(){
 
     attemptsText.textContent = attempts;
 
-    history.innerHTML="";
+    history.innerHTML = "";
 
-    input.value="";
+    input.value = "";
 
     resultCard.classList.add("hidden");
 
@@ -44,13 +44,12 @@ function startGame(){
 
 
 
-function checkGuess(){
+function checkGuess() {
+
+    let guess = input.value.trim();
 
 
-    let guess = input.value;
-
-
-    if(guess.length !== 4){
+    if (guess.length !== 4 || isNaN(guess)) {
 
         return;
 
@@ -67,15 +66,17 @@ function checkGuess(){
     let correctNumber = 0;
 
 
-    for(let i=0;i<4;i++){
 
-        if(guess[i] === secretCode[i]){
+    for (let i = 0; i < 4; i++) {
+
+
+        if (guess[i] === secretCode[i]) {
 
             correctPlace++;
 
         }
 
-        else if(secretCode.includes(guess[i])){
+        else if (secretCode.includes(guess[i])) {
 
             correctNumber++;
 
@@ -85,46 +86,43 @@ function checkGuess(){
 
 
 
-    let result =
-    document.createElement("div");
+    let result = document.createElement("div");
 
-    result.className="guess";
+    result.className = "guess";
 
 
-    result.innerHTML =
-
-    guess +
-    "<br>🟢 Correct place: "
-    + correctPlace +
-
-    "<br>🟡 Wrong place: "
-    + correctNumber;
-
+    result.innerHTML = `
+        🔢 ${guess}
+        <br>
+        🟢 Correct place: ${correctPlace}
+        <br>
+        🟡 Wrong place: ${correctNumber}
+    `;
 
 
     history.prepend(result);
 
 
 
-    if(correctPlace === 4){
+    if (correctPlace === 4) {
 
         winGame();
 
     }
 
 
-    input.value="";
+    input.value = "";
 
 }
 
 
 
-function winGame(){
+function winGame() {
 
-    resultTitle.textContent="🎉 You Cracked It!";
+    resultTitle.textContent = "🎉 You Cracked It!";
 
     resultScore.textContent =
-    "Attempts: " + attempts;
+        "Solved in " + attempts + " attempts";
 
 
     resultCard.classList.remove("hidden");
@@ -133,11 +131,39 @@ function winGame(){
 
 
 
-function restartGame(){
+function restartGame() {
 
     startGame();
 
 }
+
+
+
+guessButton.addEventListener(
+    "click",
+    checkGuess
+);
+
+
+restartButton.addEventListener(
+    "click",
+    restartGame
+);
+
+
+
+input.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Enter") {
+
+            checkGuess();
+
+        }
+
+    }
+);
 
 
 
