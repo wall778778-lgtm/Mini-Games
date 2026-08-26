@@ -11,55 +11,46 @@ const resultTitle = document.getElementById("result-title");
 const resultScore = document.getElementById("result-score");
 
 
-const restartButton =
-document.getElementById("restartButton");
-
-
-
-let player;
-let objects;
+let robot;
+let obstacles;
+let coins;
 
 let score;
 let energy;
 
 let magnet;
-let speed;
-
 let gameRunning;
-
 
 
 function startGame(){
 
 
-    player = {
+    robot = {
 
         x:80,
         y:300,
-        size:25
+
+        size:25,
+
+        velocity:0
 
     };
 
 
-    objects=[];
+    obstacles=[];
+    coins=[];
 
 
     score=0;
+    energy=100;
 
-    energy=3;
 
     magnet=false;
-
-    speed=3;
-
 
     gameRunning=true;
 
 
     resultCard.classList.add("hidden");
-
-
-    updateUI();
 
 
     requestAnimationFrame(gameLoop);
@@ -68,40 +59,52 @@ function startGame(){
 
 
 
-function createObject(){
+function createObjects(){
 
 
-    let type =
-    Math.random()<0.25
-    ? "rock"
-    : "coin";
+    if(Math.random()<0.03){
+
+        obstacles.push({
+
+            x:420,
+
+            y:Math.random()*500+50,
+
+            size:25
+
+        });
+
+    }
 
 
-    objects.push({
 
-        x:420,
+    if(Math.random()<0.02){
 
-        y:Math.random()*550+25,
+        coins.push({
 
-        size:20,
+            x:420,
 
-        type:type
+            y:Math.random()*500+50,
 
-    });
+            size:15
+
+        });
+
+    }
 
 
 }
 
 
 
-function drawPlayer(){
+function drawRobot(){
 
     ctx.font="35px Arial";
 
     ctx.fillText(
         "🤖",
-        player.x,
-        player.y
+        robot.x,
+        robot.y
     );
 
 }
@@ -111,24 +114,28 @@ function drawPlayer(){
 function drawObjects(){
 
 
-    objects.forEach(obj=>{
+    obstacles.forEach(o=>{
 
+        ctx.font="35px Arial";
+
+        ctx.fillText(
+            "🔴",
+            o.x,
+            o.y
+        );
+
+    });
+
+
+    coins.forEach(c=>{
 
         ctx.font="30px Arial";
 
-
         ctx.fillText(
-
-            obj.type==="coin"
-            ?"🟡"
-            :"🪨",
-
-            obj.x,
-
-            obj.y
-
+            "🟡",
+            c.x,
+            c.y
         );
-
 
     });
 
@@ -145,115 +152,133 @@ function update(){
 
 
 
-    if(Math.random()<0.03){
+    createObjects();
 
-        createObject();
+
+
+    // Robot movement
+
+    robot.x += 2;
+
+
+
+    // Gravity
+
+    robot.velocity += 0.25;
+
+
+
+    // Magnet pulls upward
+
+    if(magnet && energy > 0){
+
+        robot.velocity -= 0.5;
+
+        energy -= 0.5;
 
     }
 
 
 
-    objects.forEach(obj=>{
-
-
-        obj.x -= speed;
+    robot.y += robot.velocity;
 
 
 
-        if(magnet && obj.type==="coin"){
+    // floor and ceiling
 
-            if(obj.x < 250){
+    if(robot.y > 560){
 
-                obj.x -= 6;
+        robot.y=560;
 
-            }
+        robot.velocity=0;
 
-        }
+    }
 
 
+    if(robot.y < 20){
 
-        let hit =
+        robot.y=20;
 
-        Math.hypot(
+        robot.velocity=0;
 
-            obj.x-player.x,
-
-            obj.y-player.y
-
-        ) < 35;
+    }
 
 
 
-        if(hit){
+    obstacles.forEach(o=>{
 
 
-            if(obj.type==="coin"){
-
-                score+=10;
-
-            }
-
-            else{
-
-                endGame();
-
-            }
+        o.x-=4;
 
 
-            obj.x=-100;
+        if(distance(robot,o)<35){
 
+            endGame();
 
         }
-
 
 
     });
 
 
 
-    objects =
-    objects.filter(
-        obj=>obj.x>-50
-    );
+    coins.forEach(c=>{
+
+
+        c.x-=4;
+
+
+        if(distance(robot,c)<35){
+
+            score+=10;
+
+            c.x=-100;
+
+        }
+
+
+    });
+
+
+
+    obstacles =
+    obstacles.filter(o=>o.x>-50);
+
+
+    coins =
+    coins.filter(c=>c.x>-50);
 
 
 
     score++;
 
 
-    if(score%300===0){
-
-        speed+=0.5;
-
-    }
+    scoreText.textContent=score;
 
 
-
-    if(magnet){
-
-        energy-=0.02;
+    energyText.textContent=
+    Math.floor(energy);
 
 
-        if(energy<=0){
-
-            energy=0;
-
-            magnet=false;
-
-        }
-
-    }
+}
 
 
 
-    updateUI();
+function distance(a,b){
+
+    return Math.hypot(
+
+        a.x-b.x,
+
+        a.y-b.y
+
+    );
 
 }
 
 
 
 function draw(){
-
 
     ctx.clearRect(
         0,
@@ -263,17 +288,15 @@ function draw(){
     );
 
 
-    drawPlayer();
+    drawRobot();
 
     drawObjects();
-
 
 }
 
 
 
 function gameLoop(){
-
 
     update();
 
@@ -286,37 +309,20 @@ function gameLoop(){
 
     }
 
-
 }
 
 
 
-function activateMagnet(){
+function activate(){
 
-
-    if(energy>0){
-
-        magnet=true;
-
-    }
-
+    magnet=true;
 
 }
 
 
+function deactivate(){
 
-function updateUI(){
-
-
-    scoreText.textContent =
-    score;
-
-
-    energyText.textContent =
-    "🧲".repeat(
-        Math.ceil(energy)
-    );
-
+    magnet=false;
 
 }
 
@@ -324,20 +330,18 @@ function updateUI(){
 
 function endGame(){
 
-
     gameRunning=false;
 
 
-    resultTitle.textContent =
-    "💥 Robot Crashed";
+    resultTitle.textContent=
+    "💥 Robot Destroyed";
 
 
-    resultScore.textContent =
+    resultScore.textContent=
     "Score: "+score;
 
 
     resultCard.classList.remove("hidden");
-
 
 }
 
@@ -347,31 +351,51 @@ document.addEventListener(
 "keydown",
 e=>{
 
-    if(e.code==="Space"){
+    if(e.code==="Space")
+        activate();
 
-        activateMagnet();
+});
 
-    }
+
+document.addEventListener(
+"keyup",
+e=>{
+
+    if(e.code==="Space")
+        deactivate();
 
 });
 
 
 
 canvas.addEventListener(
-"click",
-activateMagnet
+"touchstart",
+activate
 );
 
 
 canvas.addEventListener(
-"touchstart",
-activateMagnet
+"touchend",
+deactivate
 );
 
 
 
-restartButton.onclick =
-startGame;
+canvas.addEventListener(
+"mousedown",
+activate
+);
+
+
+canvas.addEventListener(
+"mouseup",
+deactivate
+);
+
+
+
+document.getElementById("restartButton")
+.onclick=startGame;
 
 
 
