@@ -1,0 +1,68 @@
+body {
+    margin: 0;
+    background: #020617;
+    color: white;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.game-container {
+    text-align: center;
+}
+
+
+canvas {
+    background: linear-gradient(#0f172a, #1e3a8a);
+    border: 3px solid #38bdf8;
+    border-radius: 12px;
+    max-width: 95vw;
+}
+
+
+.score {
+    font-size: 20px;
+    margin: 10px;
+}
+
+
+.hint {
+    color: #94a3b8;
+}
+
+
+#result-card {
+    position: absolute;
+    background: #111827;
+    border: 2px solid #38bdf8;
+    border-radius: 15px;
+    padding: 25px;
+    width: 250px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+.hidden {
+    display: none;
+}
+
+
+button {
+    background: #2563eb;
+    border: none;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+
+button:hover {
+    background: #1d4ed8;
+}
