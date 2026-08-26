@@ -19,14 +19,14 @@ function startGame(){
     player = {
         x:80,
         y:300,
-        size:25,
+        size:20,
         velocity:0
     };
 
 
     obstacles = [];
 
-    gravity = 1;
+    gravity = 0.35;
 
     score = 0;
 
@@ -41,12 +41,24 @@ function startGame(){
 
 function createObstacle(){
 
+    let gap = 180;
+
+    let topHeight =
+    Math.random() * 250 + 50;
+
+
     obstacles.push({
 
-        x:400,
-        y:Math.random()*450+50,
-        width:40,
-        height:120
+        x:420,
+
+        top:topHeight,
+
+        bottom:
+        canvas.height - topHeight - gap,
+
+        width:45,
+
+        speed:3
 
     });
 
@@ -84,15 +96,15 @@ function drawObstacles(){
             ob.x,
             0,
             ob.width,
-            ob.y
+            ob.top
         );
 
 
         ctx.fillRect(
             ob.x,
-            ob.y+ob.height,
+            canvas.height-ob.bottom,
             ob.width,
-            canvas.height
+            ob.bottom
         );
 
     });
@@ -106,26 +118,56 @@ function update(){
     if(!gameRunning) return;
 
 
-    player.velocity += gravity * 0.3;
+    // gravity movement
+    player.velocity += gravity;
 
     player.y += player.velocity;
 
 
+
+    // touching floor or ceiling is allowed
+
+    if(player.y < player.size){
+
+        player.y = player.size;
+        player.velocity = 0;
+
+    }
+
+
+    if(player.y > canvas.height-player.size){
+
+        player.y =
+        canvas.height-player.size;
+
+        player.velocity = 0;
+
+    }
+
+
+
     obstacles.forEach(ob=>{
 
-        ob.x -= 3;
 
+        ob.x -= ob.speed;
+
+
+
+        // obstacle pushes player left
 
         if(
             player.x + player.size > ob.x &&
-            player.x - player.size < ob.x + ob.width &&
-            (
-                player.y - player.size < ob.y ||
-                player.y + player.size > ob.y + ob.height
-            )
+            player.x - player.size < ob.x + ob.width
         ){
 
-            endGame();
+            if(
+                player.y - player.size < ob.top ||
+                player.y + player.size > canvas.height-ob.bottom
+            ){
+
+                player.x -= 2;
+
+            }
 
         }
 
@@ -133,26 +175,34 @@ function update(){
     });
 
 
+
     obstacles =
-    obstacles.filter(ob=>ob.x>-50);
+    obstacles.filter(ob=>ob.x>-100);
 
 
 
-    if(Math.random()<0.02){
+    if(Math.random()<0.015){
+
         createObstacle();
+
     }
+
+
+
+    // only losing condition
+
+    if(player.x <= 0){
+
+        endGame();
+
+    }
+
 
 
     score++;
 
     scoreText.textContent =
     Math.floor(score/10);
-
-
-
-    if(player.y < 0 || player.y > canvas.height){
-        endGame();
-    }
 
 }
 
@@ -169,6 +219,7 @@ function draw(){
 
 
     drawPlayer();
+
     drawObstacles();
 
 }
@@ -178,11 +229,14 @@ function draw(){
 function gameLoop(){
 
     update();
+
     draw();
 
 
     if(gameRunning){
+
         requestAnimationFrame(gameLoop);
+
     }
 
 }
@@ -195,7 +249,8 @@ function switchGravity(){
 
         gravity *= -1;
 
-        player.velocity = -gravity * 5;
+        player.velocity =
+        gravity * 8;
 
     }
 
@@ -207,9 +262,9 @@ function endGame(){
 
     gameRunning=false;
 
-    resultTitle.textContent="💥 Game Over";
+    resultTitle.textContent="💥 Crashed!";
 
-    resultScore.textContent=
+    resultScore.textContent =
     "Score: " + Math.floor(score/10);
 
     resultCard.classList.remove("hidden");
@@ -231,7 +286,9 @@ document.addEventListener(
 e=>{
 
     if(e.code==="Space"){
+
         switchGravity();
+
     }
 
 });
