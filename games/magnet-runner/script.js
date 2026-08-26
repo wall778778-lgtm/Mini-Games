@@ -25,16 +25,12 @@ let gameRunning;
 function startGame(){
 
 
-    robot = {
-
-        x:80,
-        y:300,
-
-        size:25,
-
-        velocity:0
-
-    };
+   robot = {
+    x: 80,
+    y: 300,
+    size: 25,
+    velocity: 0
+};
 
 
     obstacles=[];
@@ -180,7 +176,7 @@ function update(){
 
 
 
-    robot.y += robot.velocity;
+   
 
 
 
