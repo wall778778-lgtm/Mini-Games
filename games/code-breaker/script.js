@@ -19,13 +19,12 @@ function startGame() {
 
     secretCode = "";
 
+    // Generate 4 digit code (duplicates allowed)
     while (secretCode.length < 4) {
 
         let number = Math.floor(Math.random() * 10);
 
-        if (!secretCode.includes(number)) {
-            secretCode += number;
-        }
+        secretCode += number;
 
     }
 
@@ -40,6 +39,8 @@ function startGame() {
 
     resultCard.classList.add("hidden");
 
+    console.log("Secret code:", secretCode); // Remove later
+
 }
 
 
@@ -50,9 +51,7 @@ function checkGuess() {
 
 
     if (guess.length !== 4 || isNaN(guess)) {
-
         return;
-
     }
 
 
@@ -61,24 +60,46 @@ function checkGuess() {
     attemptsText.textContent = attempts;
 
 
-    let correctPlace = 0;
 
+    let secretArray = secretCode.split("");
+    let guessArray = guess.split("");
+
+    let correctPlace = 0;
     let correctNumber = 0;
 
 
 
+    // Check correct positions
     for (let i = 0; i < 4; i++) {
 
-
-        if (guess[i] === secretCode[i]) {
+        if (guessArray[i] === secretArray[i]) {
 
             correctPlace++;
 
+            secretArray[i] = null;
+            guessArray[i] = null;
+
         }
 
-        else if (secretCode.includes(guess[i])) {
+    }
 
-            correctNumber++;
+
+
+    // Check wrong positions
+    for (let i = 0; i < 4; i++) {
+
+        if (guessArray[i] !== null) {
+
+            let index = secretArray.indexOf(guessArray[i]);
+
+
+            if (index !== -1) {
+
+                correctNumber++;
+
+                secretArray[index] = null;
+
+            }
 
         }
 
