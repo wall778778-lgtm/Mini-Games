@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sudoku - Mini Games</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="game-container">
+
+<h1>🧩 Sudoku</h1>
+
+<div id="board"></div>
+
+<div class="numbers">
+    <button onclick="selectNumber(1)">1</button>
+    <button onclick="selectNumber(2)">2</button>
+    <button onclick="selectNumber(3)">3</button>
+    <button onclick="selectNumber(4)">4</button>
+    <button onclick="selectNumber(5)">5</button>
+    <button onclick="selectNumber(6)">6</button>
+    <button onclick="selectNumber(7)">7</button>
+    <button onclick="selectNumber(8)">8</button>
+    <button onclick="selectNumber(9)">9</button>
+</div>
+
+<button id="newGame">New Game</button>
+
+<p>Mistakes: <span id="mistakes">0</span></p>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
