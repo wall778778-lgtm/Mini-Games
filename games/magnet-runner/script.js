@@ -5,10 +5,11 @@ const ctx = canvas.getContext("2d");
 const scoreText = document.getElementById("score");
 const energyText = document.getElementById("energy");
 
-
 const resultCard = document.getElementById("result-card");
 const resultTitle = document.getElementById("result-title");
 const resultScore = document.getElementById("result-score");
+
+const restartButton = document.getElementById("restartButton");
 
 
 let robot;
@@ -22,28 +23,26 @@ let magnet;
 let gameRunning;
 
 
+
 function startGame(){
 
-
-   robot = {
-    x: 80,
-    y: 300,
-    size: 25,
-    velocity: 0
-};
-
-
-    obstacles=[];
-    coins=[];
+    robot = {
+        x: 80,
+        y: 300,
+        size: 25,
+        velocity: 0
+    };
 
 
-    score=0;
-    energy=100;
+    obstacles = [];
+    coins = [];
 
+    score = 0;
+    energy = 100;
 
-    magnet=false;
+    magnet = false;
 
-    gameRunning=true;
+    gameRunning = true;
 
 
     resultCard.classList.add("hidden");
@@ -57,37 +56,30 @@ function startGame(){
 
 function createObjects(){
 
-
-    if(Math.random()<0.03){
+    if(Math.random() < 0.03){
 
         obstacles.push({
 
-            x:420,
-
-            y:Math.random()*500+50,
-
-            size:25
+            x: 430,
+            y: Math.random() * 520 + 40,
+            size: 25
 
         });
 
     }
 
 
-
-    if(Math.random()<0.02){
+    if(Math.random() < 0.02){
 
         coins.push({
 
-            x:420,
-
-            y:Math.random()*500+50,
-
-            size:15
+            x: 430,
+            y: Math.random() * 520 + 40,
+            size: 15
 
         });
 
     }
-
 
 }
 
@@ -95,7 +87,7 @@ function createObjects(){
 
 function drawRobot(){
 
-    ctx.font="35px Arial";
+    ctx.font = "35px Arial";
 
     ctx.fillText(
         "🤖",
@@ -109,23 +101,23 @@ function drawRobot(){
 
 function drawObjects(){
 
+    obstacles.forEach(ob => {
 
-    obstacles.forEach(o=>{
-
-        ctx.font="35px Arial";
+        ctx.font = "35px Arial";
 
         ctx.fillText(
             "🔴",
-            o.x,
-            o.y
+            ob.x,
+            ob.y
         );
 
     });
 
 
-    coins.forEach(c=>{
 
-        ctx.font="30px Arial";
+    coins.forEach(c => {
+
+        ctx.font = "30px Arial";
 
         ctx.fillText(
             "🟡",
@@ -134,7 +126,6 @@ function drawObjects(){
         );
 
     });
-
 
 }
 
@@ -152,12 +143,6 @@ function update(){
 
 
 
-    // Robot movement
-
-    robot.x += 2;
-
-
-
     // Gravity
 
     robot.velocity += 0.25;
@@ -168,7 +153,7 @@ function update(){
 
     if(magnet && energy > 0){
 
-        robot.velocity -= 0.5;
+        robot.velocity -= 0.45;
 
         energy -= 0.5;
 
@@ -176,84 +161,88 @@ function update(){
 
 
 
-   
+    robot.y += robot.velocity;
 
 
 
-    // floor and ceiling
+    // Keep robot inside screen
+
+    if(robot.y < 40){
+
+        robot.y = 40;
+
+        robot.velocity = 0;
+
+    }
+
 
     if(robot.y > 560){
 
-        robot.y=560;
+        robot.y = 560;
 
-        robot.velocity=0;
-
-    }
-
-
-    if(robot.y < 20){
-
-        robot.y=20;
-
-        robot.velocity=0;
+        robot.velocity = 0;
 
     }
 
 
 
-    obstacles.forEach(o=>{
+    // Move obstacles
+
+    obstacles.forEach(ob => {
+
+        ob.x -= 5;
 
 
-        o.x-=4;
-
-
-        if(distance(robot,o)<35){
+        if(distance(robot, ob) < 40){
 
             endGame();
 
         }
 
-
     });
 
 
 
-    coins.forEach(c=>{
+    // Move coins
+
+    coins.forEach(c => {
+
+        c.x -= 5;
 
 
-        c.x-=4;
+        if(distance(robot, c) < 40){
 
+            score += 10;
 
-        if(distance(robot,c)<35){
-
-            score+=10;
-
-            c.x=-100;
+            c.x = -100;
 
         }
-
 
     });
 
 
 
     obstacles =
-    obstacles.filter(o=>o.x>-50);
+    obstacles.filter(
+        ob => ob.x > -50
+    );
 
 
     coins =
-    coins.filter(c=>c.x>-50);
+    coins.filter(
+        c => c.x > -50
+    );
 
 
 
     score++;
 
 
-    scoreText.textContent=score;
+    scoreText.textContent = score;
 
+    energyText.textContent =
+        Math.floor(energy);
 
-    energyText.textContent=
-    Math.floor(energy);
 
 
 }
@@ -263,11 +252,8 @@ function update(){
 function distance(a,b){
 
     return Math.hypot(
-
-        a.x-b.x,
-
-        a.y-b.y
-
+        a.x - b.x,
+        a.y - b.y
     );
 
 }
@@ -309,16 +295,21 @@ function gameLoop(){
 
 
 
-function activate(){
+function activateMagnet(){
 
-    magnet=true;
+    if(energy > 0){
+
+        magnet = true;
+
+    }
 
 }
 
 
-function deactivate(){
 
-    magnet=false;
+function deactivateMagnet(){
+
+    magnet = false;
 
 }
 
@@ -326,15 +317,15 @@ function deactivate(){
 
 function endGame(){
 
-    gameRunning=false;
+    gameRunning = false;
 
 
-    resultTitle.textContent=
+    resultTitle.textContent =
     "💥 Robot Destroyed";
 
 
-    resultScore.textContent=
-    "Score: "+score;
+    resultScore.textContent =
+    "Score: " + score;
 
 
     resultCard.classList.remove("hidden");
@@ -345,53 +336,57 @@ function endGame(){
 
 document.addEventListener(
 "keydown",
-e=>{
+e => {
 
-    if(e.code==="Space")
-        activate();
+    if(e.code === "Space"){
+
+        activateMagnet();
+
+    }
 
 });
 
 
 document.addEventListener(
 "keyup",
-e=>{
+e => {
 
-    if(e.code==="Space")
-        deactivate();
+    if(e.code === "Space"){
+
+        deactivateMagnet();
+
+    }
 
 });
 
 
 
 canvas.addEventListener(
-"touchstart",
-activate
-);
-
-
-canvas.addEventListener(
-"touchend",
-deactivate
-);
-
-
-
-canvas.addEventListener(
 "mousedown",
-activate
+activateMagnet
 );
 
 
 canvas.addEventListener(
 "mouseup",
-deactivate
+deactivateMagnet
+);
+
+
+canvas.addEventListener(
+"touchstart",
+activateMagnet
+);
+
+
+canvas.addEventListener(
+"touchend",
+deactivateMagnet
 );
 
 
 
-document.getElementById("restartButton")
-.onclick=startGame;
+restartButton.onclick = startGame;
 
 
 
