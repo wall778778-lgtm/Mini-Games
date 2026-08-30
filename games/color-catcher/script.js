@@ -1,100 +1,95 @@
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+const canvas =
+document.getElementById("gameCanvas");
+
+const ctx =
+canvas.getContext("2d");
 
 
-const scoreElement = document.getElementById("score");
-const livesElement = document.getElementById("lives");
+const scoreText =
+document.getElementById("score");
 
-const resultCard = document.getElementById("result-card");
-const resultTitle = document.getElementById("result-title");
-const resultScore = document.getElementById("result-score");
+const livesText =
+document.getElementById("lives");
 
-const restartButton = document.getElementById("restartButton");
+
+const resultCard =
+document.getElementById("result-card");
+
+const resultTitle =
+document.getElementById("result-title");
+
+const resultScore =
+document.getElementById("result-score");
+
+
+const restartButton =
+document.getElementById("restartButton");
+
 
 
 const colors = [
-    {
-        name: "red",
-        value: "#ef4444"
-    },
-    {
-        name: "blue",
-        value: "#3b82f6"
-    },
-    {
-        name: "green",
-        value: "#22c55e"
-    },
-    {
-        name: "yellow",
-        value: "#facc15"
-    }
+
+{
+name:"red",
+color:"#ef4444",
+points:3
+},
+
+{
+name:"blue",
+color:"#3b82f6",
+points:1
+},
+
+{
+name:"green",
+color:"#22c55e",
+points:1
+},
+
+{
+name:"yellow",
+color:"#facc15",
+points:2
+}
+
 ];
 
 
-let player;
+
 let ball;
 
 let score;
-let lives;
 
-let left;
-let right;
+let lives;
 
 let speed;
 
 let running;
 
-let timer;
-
 
 
 function startGame(){
 
-    player = {
 
-        x: 260,
+score=0;
 
-        y: 520,
+lives=3;
 
-        width: 50,
+speed=3;
 
-        height: 20,
+ball=null;
 
-        speed: 8
-
-    };
+running=true;
 
 
-    ball = null;
+resultCard.classList.add("hidden");
 
 
-    score = 0;
-
-    lives = 3;
+updateUI();
 
 
-    speed = 3;
-
-
-    left = false;
-
-    right = false;
-
-
-    timer = 0;
-
-
-    running = true;
-
-
-    resultCard.classList.add("hidden");
-
-
-    updateUI();
-
-
-    requestAnimationFrame(gameLoop);
+requestAnimationFrame(gameLoop);
 
 }
 
@@ -102,25 +97,28 @@ function startGame(){
 
 function createBall(){
 
-    let index =
-    Math.floor(Math.random()*4);
+
+let index =
+Math.floor(Math.random()*4);
 
 
-    ball = {
 
-        x:
-        index * 150 + 75,
+ball={
 
-        y: -20,
+x:Math.random()*560+20,
 
-        radius: 15,
+y:-20,
 
-        color:
-        colors[index],
+radius:18,
 
-        zone:index
+color:colors[index],
 
-    };
+zone:Math.floor(
+Math.random()*4
+)
+
+};
+
 
 }
 
@@ -128,113 +126,95 @@ function createBall(){
 
 function update(){
 
-    if(!running)
-        return;
 
-
-    // movement
-
-    if(left)
-        player.x -= player.speed;
-
-
-    if(right)
-        player.x += player.speed;
+if(!running)
+return;
 
 
 
-    if(player.x < 0)
-        player.x = 0;
+if(!ball){
 
-
-    if(player.x + player.width > 600)
-        player.x = 600-player.width;
-
-
-
-    // create balls
-
-    if(!ball){
-
-        timer++;
-
-        if(timer > 40){
-
-            createBall();
-
-            timer=0;
-
-        }
-
-    }
-
-
-
-    if(ball){
-
-        ball.y += speed;
-
-
-
-        if(
-            ball.y + ball.radius >= player.y &&
-            ball.x > player.x &&
-            ball.x < player.x + player.width
-        ){
-
-            let zone =
-            Math.floor(ball.x / 150);
-
-
-
-            if(zone === ball.zone){
-
-                score++;
-
-                speed += 0.15;
-
-            }
-            else{
-
-                loseLife();
-
-            }
-
-
-            ball=null;
-
-        }
-
-
-
-        if(ball && ball.y > 600){
-
-            loseLife();
-
-            ball=null;
-
-        }
-
-
-    }
-
-
-    updateUI();
+createBall();
 
 }
 
 
 
-function loseLife(){
-
-    lives--;
+ball.y+=speed;
 
 
-    if(lives <=0){
 
-        endGame();
+// ball reached zones
 
-    }
+if(ball.y>500){
+
+
+if(ball.y>620){
+
+loseHeart();
+
+ball=null;
+
+}
+
+}
+
+
+}
+
+
+
+function loseHeart(){
+
+
+lives--;
+
+
+if(lives<=0){
+
+endGame();
+
+}
+
+
+}
+
+
+
+function clickZone(index){
+
+
+if(!ball)
+return;
+
+
+
+// only when ball is near zones
+
+if(ball.y>480){
+
+
+if(ball.zone===index){
+
+
+score+=ball.color.points;
+
+
+}
+
+else{
+
+
+loseHeart();
+
+
+}
+
+
+ball=null;
+
+
+}
 
 }
 
@@ -242,10 +222,13 @@ function loseLife(){
 
 function updateUI(){
 
-    scoreElement.textContent=score;
 
-    livesElement.textContent=
-    "❤️".repeat(lives);
+scoreText.textContent=score;
+
+
+livesText.textContent=
+"❤️".repeat(lives);
+
 
 }
 
@@ -254,98 +237,105 @@ function updateUI(){
 function draw(){
 
 
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-
-    // background
-
-    ctx.fillStyle="#0f172a";
-
-    ctx.fillRect(
-        0,
-        0,
-        600,
-        600
-    );
+ctx.clearRect(
+0,
+0,
+600,
+600
+);
 
 
 
-    // zones
+ctx.fillStyle="#0f172a";
 
-    for(let i=0;i<4;i++){
-
-        ctx.fillStyle=
-        colors[i].value;
-
-
-        ctx.globalAlpha=0.3;
-
-
-        ctx.fillRect(
-            i*150,
-            560,
-            150,
-            40
-        );
-
-
-        ctx.globalAlpha=1;
-
-
-        ctx.fillStyle="white";
-
-        ctx.font="18px Arial";
-
-        ctx.fillText(
-            colors[i].name,
-            i*150+50,
-            585
-        );
-
-    }
+ctx.fillRect(
+0,
+0,
+600,
+600
+);
 
 
 
-    // catcher
+// zones
 
-    ctx.fillStyle="#ffffff";
-
-    ctx.fillRect(
-        player.x,
-        player.y,
-        player.width,
-        player.height
-    );
+for(let i=0;i<4;i++){
 
 
-
-    // ball
-
-    if(ball){
-
-        ctx.beginPath();
-
-        ctx.fillStyle=
-        ball.color.value;
+ctx.fillStyle=
+colors[i].color;
 
 
-        ctx.arc(
-            ball.x,
-            ball.y,
-            ball.radius,
-            0,
-            Math.PI*2
-        );
+ctx.globalAlpha=.35;
 
 
-        ctx.fill();
+ctx.fillRect(
 
-    }
+i*150,
+
+520,
+
+150,
+
+80
+
+);
+
+
+ctx.globalAlpha=1;
+
+
+ctx.fillStyle="white";
+
+ctx.font="18px Arial";
+
+ctx.fillText(
+
+colors[i].name,
+
+i*150+50,
+
+570
+
+);
+
+
+}
+
+
+
+// ball
+
+if(ball){
+
+
+ctx.beginPath();
+
+
+ctx.fillStyle=
+ball.color.color;
+
+
+ctx.arc(
+
+ball.x,
+
+ball.y,
+
+ball.radius,
+
+0,
+
+Math.PI*2
+
+);
+
+
+ctx.fill();
+
+
+}
+
 
 
 }
@@ -354,13 +344,23 @@ function draw(){
 
 function gameLoop(){
 
-    update();
 
-    draw();
+update();
 
 
-    if(running)
-        requestAnimationFrame(gameLoop);
+draw();
+
+
+updateUI();
+
+
+
+if(running){
+
+requestAnimationFrame(gameLoop);
+
+}
+
 
 }
 
@@ -368,73 +368,86 @@ function gameLoop(){
 
 function endGame(){
 
-    running=false;
+
+running=false;
 
 
-    resultTitle.textContent=
-    "💥 Game Over";
+resultTitle.textContent=
+"💥 Game Over";
 
 
-    resultScore.textContent=
-    "Score: "+score;
+resultScore.textContent=
+"Score: "+score;
 
 
-    resultCard.classList.remove("hidden");
+resultCard.classList.remove("hidden");
+
 
 }
 
 
 
-document.addEventListener(
-"keydown",
-e=>{
 
-    if(e.key==="ArrowLeft" || e.key==="a")
-        left=true;
+canvas.addEventListener(
 
+"click",
 
-    if(e.key==="ArrowRight" || e.key==="d")
-        right=true;
-
-});
+function(e){
 
 
-
-document.addEventListener(
-"keyup",
-e=>{
-
-    if(e.key==="ArrowLeft" || e.key==="a")
-        left=false;
+let rect=
+canvas.getBoundingClientRect();
 
 
-    if(e.key==="ArrowRight" || e.key==="d")
-        right=false;
+let x=
+e.clientX-rect.left;
 
-});
+
+
+let zone=
+Math.floor(x/(canvas.width/4));
+
+
+clickZone(zone);
+
+
+}
+
+);
 
 
 
 canvas.addEventListener(
-"touchmove",
-e=>{
 
-    let rect =
-    canvas.getBoundingClientRect();
+"touchstart",
 
-
-    let x =
-    e.touches[0].clientX - rect.left;
+function(e){
 
 
-    player.x =
-    x - player.width/2;
+let rect=
+canvas.getBoundingClientRect();
 
-});
+
+let x=
+e.touches[0].clientX-rect.left;
+
+
+
+let zone=
+Math.floor(x/(canvas.width/4));
+
+
+clickZone(zone);
+
+
+}
+
+);
 
 
 
 restartButton.onclick=startGame;
+
 
 
 startGame();
