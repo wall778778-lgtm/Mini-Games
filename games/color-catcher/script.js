@@ -1,6 +1,7 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+
 const scoreElement = document.getElementById("score");
 const livesElement = document.getElementById("lives");
 
@@ -11,40 +12,19 @@ const resultScore = document.getElementById("result-score");
 const restartButton = document.getElementById("restartButton");
 
 
-let player;
-let ball;
-
-let score;
-let lives;
-
-let gameRunning;
-
-let leftPressed = false;
-let rightPressed = false;
-
-let ballSpeed;
-
-let lastTime;
-let ballTimer;
-
-
-
 const colors = [
     {
         name: "red",
         value: "#ef4444"
     },
-
     {
         name: "blue",
         value: "#3b82f6"
     },
-
     {
         name: "green",
         value: "#22c55e"
     },
-
     {
         name: "yellow",
         value: "#facc15"
@@ -52,20 +32,36 @@ const colors = [
 ];
 
 
+let player;
+let ball;
 
-function startGame() {
+let score;
+let lives;
+
+let left;
+let right;
+
+let speed;
+
+let running;
+
+let timer;
+
+
+
+function startGame(){
 
     player = {
 
-        x: 210,
+        x: 260,
 
-        y: 540,
+        y: 520,
 
-        width: 180,
+        width: 50,
 
-        height: 25,
+        height: 20,
 
-        speed: 7
+        speed: 8
 
     };
 
@@ -78,18 +74,18 @@ function startGame() {
     lives = 3;
 
 
-    ballSpeed = 3;
+    speed = 3;
 
 
-    ballTimer = 0;
+    left = false;
+
+    right = false;
 
 
-    gameRunning = true;
+    timer = 0;
 
 
-    leftPressed = false;
-
-    rightPressed = false;
+    running = true;
 
 
     resultCard.classList.add("hidden");
@@ -98,33 +94,31 @@ function startGame() {
     updateUI();
 
 
-    lastTime = performance.now();
-
-
     requestAnimationFrame(gameLoop);
+
 }
 
 
 
-function createBall() {
+function createBall(){
 
-    const color =
-        colors[
-            Math.floor(
-                Math.random() * colors.length
-            )
-        ];
+    let index =
+    Math.floor(Math.random()*4);
 
 
     ball = {
 
-        x: 40 + Math.random() * 520,
+        x:
+        index * 150 + 75,
 
         y: -20,
 
         radius: 15,
 
-        color: color
+        color:
+        colors[index],
+
+        zone:index
 
     };
 
@@ -132,182 +126,111 @@ function createBall() {
 
 
 
-function update(deltaTime) {
+function update(){
 
-    if (!gameRunning) {
+    if(!running)
         return;
-    }
 
 
-    const dt =
-        Math.min(deltaTime / 16.67, 2);
+    // movement
+
+    if(left)
+        player.x -= player.speed;
 
 
-    // Player movement
-
-    if (leftPressed) {
-
-        player.x -=
-            player.speed * dt;
-
-    }
+    if(right)
+        player.x += player.speed;
 
 
-    if (rightPressed) {
 
-        player.x +=
-            player.speed * dt;
-
-    }
-
-
-    // Keep player inside screen
-
-    if (player.x < 0) {
-
+    if(player.x < 0)
         player.x = 0;
 
-    }
+
+    if(player.x + player.width > 600)
+        player.x = 600-player.width;
 
 
-    if (
-        player.x + player.width >
-        canvas.width
-    ) {
 
-        player.x =
-            canvas.width -
-            player.width;
+    // create balls
 
-    }
+    if(!ball){
 
+        timer++;
 
-    // Create a new ball
-
-    if (!ball) {
-
-        ballTimer += deltaTime;
-
-
-        if (ballTimer > 500) {
+        if(timer > 40){
 
             createBall();
 
-            ballTimer = 0;
+            timer=0;
 
         }
 
     }
 
 
-    if (ball) {
 
-        ball.y +=
-            ballSpeed * dt;
+    if(ball){
+
+        ball.y += speed;
 
 
-        // Check if player catches ball
 
-        if (isBallCaught()) {
+        if(
+            ball.y + ball.radius >= player.y &&
+            ball.x > player.x &&
+            ball.x < player.x + player.width
+        ){
 
-            if (
-                ball.color.name ===
-                getPlayerColor()
-            ) {
+            let zone =
+            Math.floor(ball.x / 150);
+
+
+
+            if(zone === ball.zone){
 
                 score++;
 
-                ball = null;
+                speed += 0.15;
 
-                ballSpeed += 0.12;
-
-            } else {
+            }
+            else{
 
                 loseLife();
 
-                ball = null;
-
             }
 
-            updateUI();
+
+            ball=null;
 
         }
 
 
-        // Ball reached bottom
 
-        else if (
-            ball.y - ball.radius >
-            canvas.height
-        ) {
+        if(ball && ball.y > 600){
 
             loseLife();
 
-            ball = null;
-
-            updateUI();
+            ball=null;
 
         }
 
+
     }
 
-}
 
-
-
-function getPlayerColor() {
-
-    const zoneWidth =
-        player.width / 4;
-
-
-    const center =
-        player.x +
-        player.width / 2;
-
-
-    const zone =
-        Math.floor(
-            center /
-            (canvas.width / 4)
-        );
-
-
-    return colors[
-        Math.min(zone, 3)
-    ].name;
+    updateUI();
 
 }
 
 
 
-function isBallCaught() {
-
-    return (
-
-        ball.y + ball.radius >=
-        player.y &&
-
-        ball.y - ball.radius <=
-        player.y + player.height &&
-
-        ball.x >= player.x &&
-
-        ball.x <=
-        player.x + player.width
-
-    );
-
-}
-
-
-
-function loseLife() {
+function loseLife(){
 
     lives--;
 
 
-    if (lives <= 0) {
+    if(lives <=0){
 
         endGame();
 
@@ -317,24 +240,21 @@ function loseLife() {
 
 
 
-function updateUI() {
+function updateUI(){
 
-    scoreElement.textContent =
-        score;
+    scoreElement.textContent=score;
 
-
-    livesElement.textContent =
-        "❤️".repeat(lives);
+    livesElement.textContent=
+    "❤️".repeat(lives);
 
 }
 
 
 
-function drawBackground() {
+function draw(){
 
-    ctx.fillStyle = "#0f172a";
 
-    ctx.fillRect(
+    ctx.clearRect(
         0,
         0,
         canvas.width,
@@ -342,80 +262,58 @@ function drawBackground() {
     );
 
 
-    // Four color zones
+    // background
 
-    const zoneWidth =
-        canvas.width / 4;
+    ctx.fillStyle="#0f172a";
+
+    ctx.fillRect(
+        0,
+        0,
+        600,
+        600
+    );
 
 
-    for (let i = 0; i < 4; i++) {
 
-        ctx.globalAlpha = 0.15;
+    // zones
 
-        ctx.fillStyle =
-            colors[i].value;
+    for(let i=0;i<4;i++){
+
+        ctx.fillStyle=
+        colors[i].value;
+
+
+        ctx.globalAlpha=0.3;
+
 
         ctx.fillRect(
-            i * zoneWidth,
-            canvas.height - 70,
-            zoneWidth,
-            70
+            i*150,
+            560,
+            150,
+            40
         );
 
-    }
+
+        ctx.globalAlpha=1;
 
 
-    ctx.globalAlpha = 1;
+        ctx.fillStyle="white";
 
-
-    // Zone labels
-
-    ctx.font = "20px Arial";
-
-    ctx.textAlign = "center";
-
-
-    for (let i = 0; i < 4; i++) {
-
-        ctx.fillStyle =
-            colors[i].value;
+        ctx.font="18px Arial";
 
         ctx.fillText(
-            colors[i].name.toUpperCase(),
-            i * zoneWidth +
-                zoneWidth / 2,
-            canvas.height - 30
+            colors[i].name,
+            i*150+50,
+            585
         );
 
     }
 
-}
 
 
+    // catcher
 
-function drawPlayer() {
-
-    const zoneWidth =
-        canvas.width / 4;
-
-
-    const center =
-        player.x +
-        player.width / 2;
-
-
-    const zone =
-        Math.min(
-            Math.floor(
-                center / zoneWidth
-            ),
-            3
-        );
-
-
-    ctx.fillStyle =
-        colors[zone].value;
-
+    ctx.fillStyle="#ffffff";
 
     ctx.fillRect(
         player.x,
@@ -425,103 +323,60 @@ function drawPlayer() {
     );
 
 
-    ctx.font = "22px Arial";
 
-    ctx.textAlign = "center";
+    // ball
 
-    ctx.fillStyle = "white";
+    if(ball){
 
-    ctx.fillText(
-        "CATCH",
-        center,
-        player.y + 20
-    );
+        ctx.beginPath();
 
-}
-
-
-
-function drawBall() {
-
-    if (!ball) {
-        return;
-    }
-
-
-    ctx.fillStyle =
+        ctx.fillStyle=
         ball.color.value;
 
 
-    ctx.beginPath();
-
-    ctx.arc(
-        ball.x,
-        ball.y,
-        ball.radius,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
+        ctx.arc(
+            ball.x,
+            ball.y,
+            ball.radius,
+            0,
+            Math.PI*2
+        );
 
 
-    ctx.strokeStyle = "white";
+        ctx.fill();
 
-    ctx.lineWidth = 2;
+    }
 
-    ctx.stroke();
 
 }
 
 
 
-function draw() {
+function gameLoop(){
 
-    drawBackground();
-
-    drawBall();
-
-    drawPlayer();
-
-}
-
-
-
-function gameLoop(currentTime) {
-
-    const deltaTime =
-        currentTime - lastTime;
-
-
-    lastTime = currentTime;
-
-
-    update(deltaTime);
+    update();
 
     draw();
 
 
-    if (gameRunning) {
-
+    if(running)
         requestAnimationFrame(gameLoop);
-
-    }
 
 }
 
 
 
-function endGame() {
+function endGame(){
 
-    gameRunning = false;
-
-
-    resultTitle.textContent =
-        "💥 Game Over";
+    running=false;
 
 
-    resultScore.textContent =
-        "Score: " + score;
+    resultTitle.textContent=
+    "💥 Game Over";
+
+
+    resultScore.textContent=
+    "Score: "+score;
 
 
     resultCard.classList.remove("hidden");
@@ -530,135 +385,56 @@ function endGame() {
 
 
 
-function keyDown(event) {
+document.addEventListener(
+"keydown",
+e=>{
 
-    if (
-        event.key === "ArrowLeft" ||
-        event.key.toLowerCase() === "a"
-    ) {
-
-        leftPressed = true;
-
-    }
+    if(e.key==="ArrowLeft" || e.key==="a")
+        left=true;
 
 
-    if (
-        event.key === "ArrowRight" ||
-        event.key.toLowerCase() === "d"
-    ) {
+    if(e.key==="ArrowRight" || e.key==="d")
+        right=true;
 
-        rightPressed = true;
-
-    }
-
-}
-
-
-
-function keyUp(event) {
-
-    if (
-        event.key === "ArrowLeft" ||
-        event.key.toLowerCase() === "a"
-    ) {
-
-        leftPressed = false;
-
-    }
-
-
-    if (
-        event.key === "ArrowRight" ||
-        event.key.toLowerCase() === "d"
-    ) {
-
-        rightPressed = false;
-
-    }
-
-}
+});
 
 
 
 document.addEventListener(
-    "keydown",
-    keyDown
-);
+"keyup",
+e=>{
+
+    if(e.key==="ArrowLeft" || e.key==="a")
+        left=false;
 
 
-document.addEventListener(
-    "keyup",
-    keyUp
-);
+    if(e.key==="ArrowRight" || e.key==="d")
+        right=false;
 
-
-
-/*
-    Mobile controls:
-    Touch the left side = move left
-    Touch the right side = move right
-*/
-
-canvas.addEventListener(
-    "touchstart",
-    function(event) {
-
-        event.preventDefault();
-
-
-        const rect =
-            canvas.getBoundingClientRect();
-
-
-        const touch =
-            event.touches[0];
-
-
-        const x =
-            touch.clientX -
-            rect.left;
-
-
-        if (
-            x <
-            rect.width / 2
-        ) {
-
-            leftPressed = true;
-
-        } else {
-
-            rightPressed = true;
-
-        }
-
-    },
-    { passive: false }
-);
+});
 
 
 
 canvas.addEventListener(
-    "touchend",
-    function(event) {
+"touchmove",
+e=>{
 
-        event.preventDefault();
-
-        leftPressed = false;
-
-        rightPressed = false;
-
-    },
-    { passive: false }
-);
+    let rect =
+    canvas.getBoundingClientRect();
 
 
+    let x =
+    e.touches[0].clientX - rect.left;
 
-restartButton.addEventListener(
-    "click",
-    startGame
-);
 
+    player.x =
+    x - player.width/2;
+
+});
+
+
+
+restartButton.onclick=startGame;
 
 
 startGame();
