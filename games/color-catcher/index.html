@@ -1,42 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Catcher</title>
 
-    <title>Color Catcher - Mini Games</title>
-
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div class="game-container">
 
-    <h1>🎨 Color Catcher</h1>
+<h1>🎨 Color Catcher</h1>
 
-    <div class="stats">
-        <span>Score: <b id="score">0</b></span>
-        <span>Lives: <b id="lives">❤️❤️❤️</b></span>
-    </div>
+<div class="stats">
+<p>Score: <span id="score">0</span></p>
+<p>Lives: <span id="lives">❤️❤️❤️</span></p>
+</div>
 
-    <canvas id="gameCanvas" width="600" height="600"></canvas>
 
-    <p class="hint">
-        Move with ← → or A / D
-    </p>
+<canvas id="gameCanvas" width="600" height="600"></canvas>
+
+
+<p class="hint">
+Click the correct color zone when the ball reaches it
+</p>
 
 </div>
 
 
 <div id="result-card" class="result-card hidden">
 
-    <h2 id="result-title">Game Over</h2>
+<h2 id="result-title"></h2>
 
-    <p id="result-score">Score: 0</p>
+<p id="result-score"></p>
 
-    <button id="restartButton">Play Again</button>
+<button id="restartButton">
+Play Again
+</button>
 
 </div>
 
