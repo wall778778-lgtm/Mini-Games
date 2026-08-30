@@ -143,7 +143,7 @@ function update(){
     spawnTimer++;
 
 
-    if(spawnTimer >= 30){
+    if(spawnTimer >= 45){
 
         createBall();
 
