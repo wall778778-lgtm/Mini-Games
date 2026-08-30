@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gravity Flip - Mini Games</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="game-container">
+
+    <h1>🌀 Gravity Flip</h1>
+
+    <div class="stats">
+        <span>Score: <b id="score">0</b></span>
+        <span>Stars: <b id="stars">0</b> ⭐</span>
+    </div>
+
+    <canvas id="gameCanvas" width="700" height="400"></canvas>
+
+    <p class="hint">
+        Press SPACE or TAP to flip gravity
+    </p>
+
+</div>
+
+
+<div id="result-card" class="result-card hidden">
+
+    <h2 id="result-title">Game Over</h2>
+
+    <p id="result-score">Score: 0</p>
+
+    <button id="restartButton">Play Again</button>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
