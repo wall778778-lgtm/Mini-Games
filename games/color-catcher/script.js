@@ -11,60 +11,69 @@ const resultTitle = document.getElementById("result-title");
 const resultScore = document.getElementById("result-score");
 
 
-const restartButton = document.getElementById("restartButton");
+const restartButton =
+document.getElementById("restartButton");
 
 
 
 const colors = [
 
     {
-        name: "red",
-        color: "#ef4444",
-        points: 3
+        name:"red",
+        color:"#ef4444",
+        points:3
     },
 
     {
-        name: "blue",
-        color: "#3b82f6",
-        points: 1
+        name:"blue",
+        color:"#3b82f6",
+        points:1
     },
 
     {
-        name: "green",
-        color: "#22c55e",
-        points: 1
+        name:"green",
+        color:"#22c55e",
+        points:1
     },
 
     {
-        name: "yellow",
-        color: "#facc15",
-        points: 2
+        name:"yellow",
+        color:"#facc15",
+        points:2
     }
 
 ];
 
 
 
-let ball;
+let balls = [];
 
-let score;
-let lives;
+let score = 0;
 
-let speed;
+let lives = 3;
 
-let running;
+let running = false;
+
+
+let spawnTimer = 0;
+
+let gameSpeed = 3;
 
 
 
 function startGame(){
 
+
+    balls = [];
+
     score = 0;
 
     lives = 3;
 
-    speed = 3;
+    spawnTimer = 0;
 
-    ball = null;
+    gameSpeed = 3;
+
 
     running = true;
 
@@ -88,28 +97,36 @@ function createBall(){
     Math.floor(Math.random()*colors.length);
 
 
+
     let zone =
     Math.floor(Math.random()*4);
 
 
 
-    ball = {
+    balls.push({
 
         x:
         zone * 150 + 75,
 
+
         y:-20,
 
+
         radius:18,
+
 
         color:
         colors[colorIndex],
 
+
         zone:zone
 
-    };
+
+    });
+
 
 }
+
 
 
 
@@ -121,95 +138,140 @@ function update(){
 
 
 
-    if(!ball){
+    // Spawn new balls
+
+    spawnTimer++;
+
+
+    if(spawnTimer >= 30){
 
         createBall();
+
+        spawnTimer = 0;
 
     }
 
 
 
-    ball.y += speed;
+
+    // Move balls
+
+    balls.forEach(ball=>{
+
+
+        ball.y += gameSpeed;
+
+
+    });
 
 
 
-    // Ball passed the zones
 
-    if(ball.y > 620){
+    // Check missed balls
+
+    balls =
+    balls.filter(ball=>{
 
 
-        // If it was a matching ball and player ignored it
+        if(ball.y > 620){
 
-        if(
-            ball.zone ===
-            colors.indexOf(ball.color)
-        ){
 
-            loseLife();
+            // only lose if it was correct zone
+
+            if(
+                ball.color.name ===
+                colors[ball.zone].name
+            ){
+
+                loseLife();
+
+            }
+
+
+            return false;
 
         }
 
 
-        ball=null;
+        return true;
 
-    }
+
+    });
+
+
+
+    // Difficulty increase
+
+    gameSpeed =
+    3 + score * 0.02;
 
 
 
 }
+
 
 
 
 function clickZone(zone){
 
 
-    if(!ball)
-        return;
+    for(
+        let i = balls.length - 1;
+        i >= 0;
+        i--
+    ){
+
+
+        let ball = balls[i];
 
 
 
-    // Only react when ball is inside the zones
-
-    if(ball.y < 480)
-        return;
-
-
-
-    let correct =
-
-    ball.zone ===
-    colors.indexOf(ball.color);
+        if(
+            ball.zone === zone &&
+            ball.y > 480
+        ){
 
 
 
-    if(correct && zone === ball.zone){
+            if(
+                ball.color.name ===
+                colors[zone].name
+            ){
 
 
-        score += ball.color.points;
+                score +=
+                ball.color.points;
 
 
-        ball=null;
+            }
+
+
+            else{
+
+
+                loseLife();
+
+
+            }
+
+
+
+            balls.splice(i,1);
+
+
+
+            return;
+
+
+        }
 
 
     }
-
-
-    else if(zone === ball.zone){
-
-
-        // clicked a wrong color ball
-
-        loseLife();
-
-
-        ball=null;
-
-
-    }
-
 
 
 }
+
+
 
 
 
@@ -230,6 +292,7 @@ function loseLife(){
 
 
 
+
 function updateUI(){
 
 
@@ -242,6 +305,8 @@ function updateUI(){
 
 
 }
+
+
 
 
 
@@ -268,6 +333,8 @@ function draw(){
 
 
 
+
+
     // Draw zones
 
     for(let i=0;i<4;i++){
@@ -277,7 +344,7 @@ function draw(){
         colors[i].color;
 
 
-        ctx.globalAlpha=.35;
+        ctx.globalAlpha = 0.35;
 
 
         ctx.fillRect(
@@ -293,7 +360,8 @@ function draw(){
         );
 
 
-        ctx.globalAlpha=1;
+        ctx.globalAlpha = 1;
+
 
 
         ctx.fillStyle="white";
@@ -316,9 +384,11 @@ function draw(){
 
 
 
-    // Draw ball
 
-    if(ball){
+
+    // Draw balls
+
+    balls.forEach(ball=>{
 
 
         ctx.beginPath();
@@ -346,10 +416,11 @@ function draw(){
         ctx.fill();
 
 
-    }
+    });
 
 
 }
+
 
 
 
@@ -358,7 +429,9 @@ function gameLoop(){
 
     update();
 
+
     draw();
+
 
     updateUI();
 
@@ -375,24 +448,30 @@ function gameLoop(){
 
 
 
+
+
 function endGame(){
 
 
-    running=false;
+    running = false;
+
 
 
     resultTitle.textContent =
     "💥 Game Over";
 
 
+
     resultScore.textContent =
     "Score: " + score;
+
 
 
     resultCard.classList.remove("hidden");
 
 
 }
+
 
 
 
@@ -411,15 +490,17 @@ function(e){
 
 
     let zone =
-    Math.floor(
-        x / 150
-    );
+    Math.floor(x / 150);
+
 
 
     clickZone(zone);
 
 
+
 });
+
+
 
 
 
@@ -438,15 +519,16 @@ function(e){
 
 
     let zone =
-    Math.floor(
-        x / 150
-    );
+    Math.floor(x / 150);
+
 
 
     clickZone(zone);
 
 
 });
+
+
 
 
 
