@@ -2,68 +2,114 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>The Door</title>
+<meta charset="UTF-8">
 
-    <link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>The Door</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
 
 
 <body>
 
+
 <div id="game">
 
 
-    <canvas id="gameCanvas"></canvas>
+<canvas id="gameCanvas"></canvas>
 
 
-    <div id="hud">
 
-        <div>
-            LEVEL:
-            <span id="level">1</span>
-        </div>
+<div id="hud">
 
-        <div>
-            ❤️
-            <span id="lives">3</span>
-        </div>
+    <div>
+        LEVEL:
+        <span id="level">1</span>
+    </div>
+
+
+    <div>
+        ❤️
+        <span id="lives">3</span>
+    </div>
+
+</div>
+
+
+
+
+<div id="crosshair">
++
+</div>
+
+
+
+
+<div id="message">
+Click to start
+</div>
+
+
+
+
+<div id="interaction">
+Press E to interact
+</div>
+
+
+
+
+<!-- Puzzle clue board -->
+
+<div id="puzzleBox">
+
+    <h2>The Door</h2>
+
+    <p id="puzzleText">
+        Find the clues...
+    </p>
+
+</div>
+
+
+
+
+
+<!-- Mobile controls -->
+
+<div id="mobileControls">
+
+
+    <div id="joystick">
+
+        <div id="stick"></div>
 
     </div>
 
 
 
-    <div id="crosshair">
-        +
-    </div>
+    <button id="touchInteract">
+        OPEN
+    </button>
+
+
+</div>
 
 
 
-    <!-- General messages -->
-    <div id="message">
-        Click to enter the maze
-    </div>
 
 
+<div id="controls">
 
-    <!-- Door interaction message -->
-    <div id="interaction">
-        Press E to interact
-    </div>
+WASD — Move |
+Mouse — Look |
+E — Interact
 
-
-
-    <div id="controls">
-
-        WASD — Move
-        |
-        Mouse — Look
-        |
-        E — Interact
-
-    </div>
+</div>
 
 
 
