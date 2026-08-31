@@ -1,7 +1,6 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-
 const message = document.getElementById("message");
 const interaction = document.getElementById("interaction");
 
@@ -10,51 +9,45 @@ const livesText = document.getElementById("lives");
 
 
 
-/*
-====================================
+/* =========================
  SETTINGS
-====================================
-*/
+========================= */
 
 const FOV = Math.PI / 3;
-
 const MOVE_SPEED = 3;
-
 const ROTATE_SPEED = 0.003;
-
 const MAX_DISTANCE = 20;
 
 
 
-/*
-====================================
- MAP
-====================================
-*/
+/* =========================
+ ROOM
 
+ # wall
+ . floor
+========================= */
 
 const map = [
 
-"###############",
+"################",
 
-"#S............#",
+"#..............#",
 
-"#.#####.#####.#",
+"#..............#",
 
-"#.....#.....#.#",
+"#..............#",
 
-"#####.#.#####.#",
+"#..............#",
 
-"#.....#.......#",
+"#..............#",
 
-"#.#####.#####.#",
+"#..............#",
 
-"#.............#",
+"#..............#",
 
-"###############"
+"################"
 
 ];
-
 
 
 const mapWidth = map[0].length;
@@ -62,335 +55,209 @@ const mapHeight = map.length;
 
 
 
-/*
-====================================
- DOORS
-====================================
-*/
-
-
-let doors = [
-
-    {
-        x:12.5,
-        y:3.5,
-        opened:false,
-        name:"Door 1",
-        symbol:"△"
-    },
-
-
-    {
-        x:10.5,
-        y:5.5,
-        opened:false,
-        name:"Door 2",
-        symbol:"○"
-    },
-
-
-    {
-        x:4.5,
-        y:5.5,
-        opened:false,
-        name:"Door 3",
-        symbol:"□"
-    },
-
-
-    {
-        x:7.5,
-        y:7.5,
-        opened:false,
-        name:"Door 4",
-        symbol:"☆"
-    }
-
-];
-
-
-
-
-
-/*
-====================================
+/* =========================
  PLAYER
-====================================
-*/
-
+========================= */
 
 let player = {
 
-    x:1.5,
-
-    y:1.5,
-
-    angle:0
+    x:8,
+    y:6.5,
+    angle:-Math.PI/2
 
 };
 
 
 
-let keys = {};
+let keys={};
 
 let gameStarted=false;
 
-let level=1;
-
 let lives=3;
 
+let level=1;
 
 
 
+/* =========================
+ FOUR DOORS
+========================= */
 
-/*
-====================================
+let doors=[
+
+{
+x:2.5,
+y:1.2,
+symbol:"△",
+correct:false
+},
+
+{
+x:5.5,
+y:1.2,
+symbol:"○",
+correct:false
+},
+
+{
+x:8.5,
+y:1.2,
+symbol:"□",
+correct:true
+},
+
+{
+x:11.5,
+y:1.2,
+symbol:"☆",
+correct:false
+}
+
+];
+
+
+
+/* =========================
  RESIZE
-====================================
-*/
-
+========================= */
 
 function resize(){
 
-    canvas.width =
-    window.innerWidth;
-
-
-    canvas.height =
-    window.innerHeight;
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
 }
-
 
 window.addEventListener(
 "resize",
 resize
 );
 
-
 resize();
 
 
 
 
-
-
-/*
-====================================
+/* =========================
  COLLISION
-====================================
-*/
-
+========================= */
 
 function isWall(x,y){
 
 
-    let mx =
-    Math.floor(x);
+let mx=Math.floor(x);
+let my=Math.floor(y);
 
 
-    let my =
-    Math.floor(y);
-
-
-
-    if(
-        mx < 0 ||
-        my < 0 ||
-        mx >= mapWidth ||
-        my >= mapHeight
-    ){
-
-        return true;
-
-    }
+if(
+mx<0 ||
+my<0 ||
+mx>=mapWidth ||
+my>=mapHeight
+)
+return true;
 
 
 
-    if(
-        map[my][mx] === "#"
-    ){
-
-        return true;
-
-    }
-
-
-
-
-    // closed doors block movement
-
-    for(let door of doors){
-
-
-        let dx =
-        Math.abs(
-            x-door.x
-        );
-
-
-        let dy =
-        Math.abs(
-            y-door.y
-        );
-
-
-
-        if(
-            dx < 0.35 &&
-            dy < 0.35 &&
-            !door.opened
-        ){
-
-            return true;
-
-        }
-
-    }
-
-
-
-    return false;
+return map[my][mx]==="#";
 
 
 }
-
-
 
 
 
 function canMove(x,y){
 
 
-    let size=0.2;
+let size=0.2;
 
 
+return(
+!isWall(x-size,y-size)&&
+!isWall(x+size,y-size)&&
+!isWall(x-size,y+size)&&
+!isWall(x+size,y+size)
+);
 
-    return (
-
-        !isWall(x-size,y-size) &&
-
-        !isWall(x+size,y-size) &&
-
-        !isWall(x-size,y+size) &&
-
-        !isWall(x+size,y+size)
-
-    );
 
 }
 
 
 
 
-
-/*
-====================================
+/* =========================
  MOVEMENT
-====================================
-*/
+========================= */
 
 
-function updatePlayer(delta){
+function update(delta){
 
 
-    if(!gameStarted)
-        return;
-
-
-
-    let forward=0;
-
-    let side=0;
+if(!gameStarted)
+return;
 
 
 
-    if(keys["w"])
-        forward++;
+let move=0;
 
 
-    if(keys["s"])
-        forward--;
+if(keys["w"])
+move+=1;
 
-
-    if(keys["a"])
-        side--;
-
-
-    if(keys["d"])
-        side++;
+if(keys["s"])
+move-=1;
 
 
 
-
-    if(
-        forward===0 &&
-        side===0
-    )
-        return;
+let rotate=0;
 
 
+if(keys["a"])
+rotate-=1;
 
-    let length =
-    Math.sqrt(
-        forward*forward+
-        side*side
-    );
+
+if(keys["d"])
+rotate+=1;
 
 
 
-    forward/=length;
-
-    side/=length;
-
-
-
-    let speed =
-    MOVE_SPEED*delta;
+player.angle +=
+rotate *
+ROTATE_SPEED *
+100 *
+delta;
 
 
 
-    let dx =
-    (
-        Math.cos(player.angle)*forward -
-        Math.sin(player.angle)*side
-    ) * speed;
+let dx =
+Math.cos(player.angle)
+*
+move
+*
+MOVE_SPEED
+*
+delta;
 
 
 
-    let dy =
-    (
-        Math.sin(player.angle)*forward +
-        Math.cos(player.angle)*side
-    ) * speed;
+let dy =
+Math.sin(player.angle)
+*
+move
+*
+MOVE_SPEED
+*
+delta;
 
 
 
-
-
-    if(
-        canMove(
-            player.x+dx,
-            player.y
-        )
-    ){
-
-        player.x+=dx;
-
-    }
+if(canMove(player.x+dx,player.y))
+player.x+=dx;
 
 
 
-    if(
-        canMove(
-            player.x,
-            player.y+dy
-        )
-    ){
-
-        player.y+=dy;
-
-    }
+if(canMove(player.x,player.y+dy))
+player.y+=dy;
 
 
 }
@@ -400,11 +267,10 @@ function updatePlayer(delta){
 
 
 
-/*
-====================================
+
+/* =========================
  INPUT
-====================================
-*/
+========================= */
 
 
 document.addEventListener(
@@ -412,26 +278,14 @@ document.addEventListener(
 e=>{
 
 
-    keys[
-        e.key.toLowerCase()
-    ]=true;
+keys[e.key.toLowerCase()]=true;
 
 
-
-    if(
-        e.key.toLowerCase()
-        ===
-        "e"
-    ){
-
-        interactDoor();
-
-    }
+if(e.key.toLowerCase()=="e")
+chooseDoor();
 
 
 });
-
-
 
 
 document.addEventListener(
@@ -439,13 +293,10 @@ document.addEventListener(
 e=>{
 
 
-    keys[
-        e.key.toLowerCase()
-    ]=false;
+keys[e.key.toLowerCase()]=false;
 
 
 });
-
 
 
 
@@ -455,18 +306,16 @@ canvas.addEventListener(
 ()=>{
 
 
-    gameStarted=true;
+gameStarted=true;
+
+message.textContent=
+"Find the correct door";
 
 
-    message.textContent=
-    "Explore the maze...";
-
-
-    canvas.requestPointerLock();
+canvas.requestPointerLock();
 
 
 });
-
 
 
 
@@ -476,17 +325,14 @@ document.addEventListener(
 e=>{
 
 
-    if(
-        document.pointerLockElement
-        ===
-        canvas
-    ){
+if(document.pointerLockElement===canvas)
+{
 
-        player.angle +=
-        e.movementX *
-        ROTATE_SPEED;
+player.angle+=
+e.movementX*
+ROTATE_SPEED;
 
-    }
+}
 
 
 });
@@ -495,87 +341,35 @@ e=>{
 
 
 
-/*
-====================================
- DOOR DETECTION
-====================================
-*/
+
+/* =========================
+ DOOR CHECK
+========================= */
 
 
-function getNearbyDoor(){
+function nearbyDoor(){
 
 
-    for(let door of doors){
+for(let door of doors){
 
 
-        let distance =
-        Math.sqrt(
-
-            (player.x-door.x)**2+
-
-            (player.y-door.y)**2
-
-        );
+let distance =
+Math.sqrt(
+(player.x-door.x)**2+
+(player.y-door.y)**2
+);
 
 
 
-        if(distance < 1.3){
-
-            return door;
-
-        }
-
-
-    }
-
-
-    return null;
+if(distance<1.5)
+return door;
 
 
 }
 
-/*
-====================================
- DOOR INTERACTION
-====================================
-*/
 
+return null;
 
-function interactDoor(){
-
-    let door =
-    getNearbyDoor();
-
-
-    if(!door)
-        return;
-
-
-
-    if(!door.opened){
-
-
-        door.opened=true;
-
-
-        interaction.classList.remove(
-            "show"
-        );
-
-
-        message.textContent =
-        "🚪 Door opened";
-
-
-        setTimeout(()=>{
-
-            message.textContent =
-            "The room beyond is waiting...";
-
-        },1500);
-
-
-    }
 
 }
 
@@ -583,91 +377,96 @@ function interactDoor(){
 
 
 
+function chooseDoor(){
 
 
-function checkDoorPrompt(){
+let door=
+nearbyDoor();
 
 
-    let door =
-    getNearbyDoor();
+if(!door)
+return;
 
 
 
-    if(
-        door &&
-        !door.opened
-    ){
-
-        interaction.classList.add(
-            "show"
-        );
+if(door.correct){
 
 
-    }
-    else{
+message.textContent=
+"✅ Correct! Next room...";
 
-        interaction.classList.remove(
-            "show"
-        );
 
-    }
+setTimeout(()=>{
+
+level++;
+
+levelText.textContent=level;
+
+message.textContent=
+"New room loading...";
+
+
+},1000);
+
+
+}
+else{
+
+
+lives--;
+
+livesText.textContent=lives;
+
+
+message.textContent=
+"❌ Wrong door!";
+
+
+}
+
+
 
 }
 
 
 
 
+/* =========================
+ RAYCAST
+========================= */
+
+
+function ray(angle){
+
+
+let distance=0;
+
+
+while(distance<MAX_DISTANCE){
+
+
+let x=
+player.x+
+Math.cos(angle)*distance;
+
+
+let y=
+player.y+
+Math.sin(angle)*distance;
 
 
 
-/*
-====================================
- RAYCASTING
-====================================
-*/
+if(isWall(x,y))
+return distance;
 
 
-function castRay(angle){
+distance+=0.02;
 
 
-    let distance=0;
+}
 
 
-
-    while(
-        distance < MAX_DISTANCE
-    ){
-
-
-        let x =
-        player.x+
-        Math.cos(angle)*distance;
-
-
-        let y =
-        player.y+
-        Math.sin(angle)*distance;
-
-
-
-        if(
-            isWall(x,y)
-        ){
-
-            return distance;
-
-        }
-
-
-
-        distance+=0.02;
-
-
-    }
-
-
-
-    return MAX_DISTANCE;
+return MAX_DISTANCE;
 
 
 }
@@ -677,38 +476,73 @@ function castRay(angle){
 
 
 
-
-/*
-====================================
- BACKGROUND
-====================================
-*/
+/* =========================
+ DRAW
+========================= */
 
 
-function drawBackground(){
+function draw(){
 
 
-    ctx.fillStyle="#111827";
+ctx.fillStyle="#111";
+ctx.fillRect(
+0,
+0,
+canvas.width,
+canvas.height/2
+);
 
 
-    ctx.fillRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height/2
-    );
+ctx.fillStyle="#050505";
+ctx.fillRect(
+0,
+canvas.height/2,
+canvas.width,
+canvas.height/2
+);
 
 
 
-    ctx.fillStyle="#050505";
 
 
-    ctx.fillRect(
-        0,
-        canvas.height/2,
-        canvas.width,
-        canvas.height/2
-    );
+for(
+let x=0;
+x<canvas.width;
+x++
+){
+
+
+let angle =
+player.angle-
+FOV/2+
+(x/canvas.width)*FOV;
+
+
+let distance=ray(angle);
+
+
+
+let height=
+canvas.height/distance;
+
+
+ctx.fillStyle=
+`rgb(${120-distance*5},${120-distance*5},${120-distance*5})`;
+
+
+ctx.fillRect(
+x,
+canvas.height/2-height/2,
+1,
+height
+);
+
+
+}
+
+
+
+drawDoors();
 
 
 }
@@ -718,334 +552,138 @@ function drawBackground(){
 
 
 
-
-
-/*
-====================================
+/* =========================
  DRAW DOORS
-====================================
-*/
+========================= */
 
 
 function drawDoors(){
 
 
-    for(let door of doors){
+for(let door of doors){
 
 
-        let dx =
-        door.x-player.x;
 
+let dx=
+door.x-player.x;
 
-        let dy =
-        door.y-player.y;
+let dy=
+door.y-player.y;
 
 
-
-        let distance =
-        Math.sqrt(
-            dx*dx+dy*dy
-        );
-
-
-
-        let angle =
-        Math.atan2(dy,dx)
-        -
-        player.angle;
-
-
-
-        while(angle > Math.PI)
-            angle-=Math.PI*2;
-
-
-
-        while(angle < -Math.PI)
-            angle+=Math.PI*2;
-
-
-
-
-        if(
-            Math.abs(angle)
-            <
-            FOV/2
-        ){
-
-
-            let wallDistance =
-            castRay(
-                player.angle+angle
-            );
-
-
-
-            // wall blocks the door view
-
-            if(
-                wallDistance < distance
-            ){
-
-                continue;
-
-            }
-
-
-
-
-
-            let screenX =
-            (
-                0.5+
-                angle/FOV
-            )
-            *
-            canvas.width;
-
-
-
-            let height =
-            canvas.height/distance;
-
-
-
-            ctx.fillStyle =
-            door.opened
-            ?
-            "#333"
-            :
-            "#8b4513";
-
-
-
-            ctx.fillRect(
-
-                screenX-height/4,
-
-                canvas.height/2-height/2,
-
-                height/2,
-
-                height
-
-            );
-
-
-
-            ctx.fillStyle="white";
-
-
-            ctx.font="24px Arial";
-
-
-            ctx.fillText(
-
-                door.symbol,
-
-                screenX-10,
-
-                canvas.height/2
-
-            );
-
-
-        }
-
-
-    }
-
-
-}
-
-
-
-
-
-
-
-
-
-/*
-====================================
- DRAW 3D WORLD
-====================================
-*/
-
-
-function draw3D(){
-
-
-    drawBackground();
-
-
-
-    for(
-        let x=0;
-        x<canvas.width;
-        x++
-    ){
-
-
-        let camera =
-        x/canvas.width;
-
-
-
-        let angle =
-        player.angle-
-        FOV/2+
-        camera*FOV;
-
-
-
-        let distance =
-        castRay(angle);
-
-
-
-        distance *=
-        Math.cos(
-            angle-player.angle
-        );
-
-
-
-        let wallHeight =
-        canvas.height/distance;
-
-
-
-        let top =
-        (
-            canvas.height-
-            wallHeight
-        )/2;
-
-
-
-        let shade =
-        Math.max(
-            20,
-            130-distance*7
-        );
-
-
-
-        ctx.fillStyle =
-        `rgb(${shade},${shade},${shade})`;
-
-
-
-        ctx.fillRect(
-
-            x,
-
-            top,
-
-            1,
-
-            wallHeight
-
-        );
-
-
-    }
-
-
-
-
-    drawDoors();
-
-
-}
-
-
-
-
-
-
-
-
-
-/*
-====================================
- GAME LOOP
-====================================
-*/
-
-
-let lastTime =
-performance.now();
-
-
-
-function gameLoop(time){
-
-
-    let delta =
-    (time-lastTime)/1000;
-
-
-
-    lastTime=time;
-
-
-
-    delta =
-    Math.min(
-        delta,
-        0.05
-    );
-
-
-
-    updatePlayer(delta);
-
-
-
-    checkDoorPrompt();
-
-
-
-    draw3D();
-
-
-
-    requestAnimationFrame(
-        gameLoop
-    );
-
-
-}
-
-
-
-
-
-
-
-/*
-====================================
- START
-====================================
-*/
-
-
-levelText.textContent =
-level;
-
-
-livesText.textContent =
-lives;
-
-
-
-message.textContent =
-"Click to enter the maze";
-
-
-
-requestAnimationFrame(
-gameLoop
+let distance=
+Math.sqrt(
+dx*dx+dy*dy
 );
+
+
+
+let angle=
+Math.atan2(dy,dx)
+-
+player.angle;
+
+
+
+if(Math.abs(angle)<FOV/2){
+
+
+
+let x=
+(
+0.5+
+angle/FOV
+)
+*
+canvas.width;
+
+
+
+let size=
+canvas.height/distance;
+
+
+
+ctx.fillStyle="#8b4513";
+
+
+ctx.fillRect(
+x-size/5,
+canvas.height/2-size/2,
+size/2,
+size
+);
+
+
+
+ctx.fillStyle="white";
+
+
+ctx.font="30px Arial";
+
+
+ctx.fillText(
+door.symbol,
+x-10,
+canvas.height/2
+);
+
+
+
+}
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+ LOOP
+========================= */
+
+
+let last=performance.now();
+
+
+
+function loop(time){
+
+
+let delta=
+(time-last)/1000;
+
+
+last=time;
+
+
+
+update(delta);
+
+draw();
+
+
+requestAnimationFrame(loop);
+
+
+}
+
+
+
+
+
+levelText.textContent=level;
+livesText.textContent=lives;
+
+message.textContent=
+"Click to start";
+
+
+requestAnimationFrame(loop);
