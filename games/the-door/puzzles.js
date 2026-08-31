@@ -1,180 +1,112 @@
-/*
-================================
- THE DOOR - PUZZLE ENGINE
-================================
-*/
-
-
 let currentPuzzle = null;
 
 
-
-/*
-Create a new puzzle
-*/
-
-function createPuzzle(level){
+function generatePuzzle(level){
 
 
-    let correct =
-    Math.floor(
-        Math.random()*4
-    );
+let answer =
+Math.floor(Math.random()*4);
 
 
 
-    let symbols = [
-        "△",
-        "○",
-        "□",
-        "☆"
-    ];
+let symbols = [
+"△",
+"○",
+"□",
+"☆"
+];
 
 
 
-    let doors=[];
+let doors=[];
 
 
 
-    for(
-        let i=0;
-        i<4;
-        i++
-    ){
-
-        doors.push({
-
-            number:i+1,
-
-            symbol:symbols[i],
-
-            statement:"",
-
-            truth:false
-
-        });
+for(let i=0;i<4;i++){
 
 
-    }
+doors.push({
 
+number:i+1,
 
+symbol:symbols[i],
 
+text:"",
 
+correct:false
 
-    /*
-    Difficulty changes
-    */
+});
 
-    if(level < 3){
-
-
-        generateEasy(
-            doors,
-            correct
-        );
-
-
-    }
-
-    else if(level < 7){
-
-
-        generateMedium(
-            doors,
-            correct
-        );
-
-
-    }
-
-    else{
-
-
-        generateHard(
-            doors,
-            correct
-        );
-
-
-    }
-
-
-
-
-
-    currentPuzzle={
-
-
-        rule:
-        "Only ONE door is correct.",
-
-
-        doors:doors,
-
-
-        answer:correct
-
-
-    };
-
-
-
-    return currentPuzzle;
 
 }
 
 
 
 
+doors[answer].correct=true;
 
 
-/*
-==============================
- EASY
-==============================
-*/
 
 
-function generateEasy(
-doors,
-correct
-){
+if(level<=3){
 
 
-    for(
-        let i=0;
-        i<4;
-        i++
-    ){
+doors[answer].text =
+"I am the correct door.";
 
 
-        if(i===correct){
+for(let i=0;i<4;i++){
+
+if(i!==answer){
+
+doors[i].text =
+"I am not the correct door.";
+
+}
+
+}
 
 
-            doors[i].statement =
-            "I am the correct door.";
+
+}
+
+else{
 
 
-            doors[i].truth=true;
+doors[0].text =
+"The answer is not Door 1.";
 
 
-        }
-
-        else{
-
-
-            doors[i].statement =
-            "I am not the correct door.";
+doors[1].text =
+"The triangle is not correct.";
 
 
-            doors[i].truth=false;
+doors[2].text =
+"The correct door is Door "+(answer+1)+".";
 
 
-        }
+doors[3].text =
+"Look carefully.";
+
+}
 
 
-    }
 
+
+currentPuzzle={
+
+rule:
+"Find the correct door.",
+
+doors:doors,
+
+answer:answer
+
+};
+
+
+
+return currentPuzzle;
 
 
 }
@@ -184,56 +116,39 @@ correct
 
 
 
-
-/*
-==============================
- MEDIUM
-==============================
-*/
+function getPuzzleText(){
 
 
-function generateMedium(
-doors,
-correct
-){
-
-
-    let other =
-    (correct+1)%4;
+if(!currentPuzzle)
+return "";
 
 
 
-    doors[correct].statement =
-    "The next door is not correct.";
-
-
-    doors[other].statement =
-    "The correct door is "+
-    (correct+1)+".";
+let text =
+currentPuzzle.rule+
+"\n\n";
 
 
 
-    for(
-        let i=0;
-        i<4;
-        i++
-    ){
+for(let d of currentPuzzle.doors){
 
 
-        if(i!==correct &&
-           i!==other)
-        {
+text+=
+
+"Door "+
+d.number+
+" "+
+d.symbol+
+"\n"+
+d.text+
+"\n\n";
 
 
-            doors[i].statement =
-            "I am wrong.";
+}
 
 
-        }
 
-
-    }
-
+return text;
 
 
 }
@@ -241,150 +156,12 @@ correct
 
 
 
+function checkAnswer(number){
 
 
+return (
+number===currentPuzzle.answer
+);
 
-/*
-==============================
- HARD
-==============================
-*/
-
-
-function generateHard(
-doors,
-correct
-){
-
-
-
-    let names=[
-        "Triangle",
-        "Circle",
-        "Square",
-        "Star"
-    ];
-
-
-
-    for(
-        let i=0;
-        i<4;
-        i++
-    ){
-
-
-        if(i===correct){
-
-
-            doors[i].statement =
-            names[i]+
-            " is the answer.";
-
-
-        }
-
-        else{
-
-
-            doors[i].statement =
-            names[
-            correct
-            ]+
-            " is not here.";
-
-
-        }
-
-
-    }
-
-
-
-}
-
-
-
-
-
-
-
-
-/*
-Check player's choice
-*/
-
-
-function checkPuzzleAnswer(
-doorNumber
-){
-
-
-
-    if(
-        !currentPuzzle
-    )
-    return false;
-
-
-
-    return (
-        doorNumber ===
-        currentPuzzle.answer
-    );
-
-}
-
-
-
-
-
-
-
-/*
-Show text on screen
-*/
-
-
-function puzzleToText(){
-
-
-    if(!currentPuzzle)
-        return "";
-
-
-
-    let text =
-    currentPuzzle.rule+
-    "\n\n";
-
-
-
-    currentPuzzle.doors.forEach(
-    door=>{
-
-
-        text +=
-
-        "Door "
-        +
-        door.number
-        +
-        " "
-        +
-        door.symbol
-        +
-        ":\n"
-        +
-        door.statement
-        +
-        "\n\n";
-
-
-    });
-
-
-
-    return text;
 
 }
