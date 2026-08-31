@@ -24,10 +24,12 @@
 
 
 
+<!-- HUD -->
+
 <div id="hud">
 
     <div>
-        LEVEL:
+        Level:
         <span id="level">1</span>
     </div>
 
@@ -42,10 +44,11 @@
 
 
 
+<!-- Center -->
+
 <div id="crosshair">
 +
 </div>
-
 
 
 
@@ -55,46 +58,48 @@ Click to start
 
 
 
-
 <div id="interaction">
-Press E to interact
-</div>
-
-
-
-
-<!-- Puzzle clue board -->
-
-<div id="puzzleBox">
-
-    <h2>The Door</h2>
-
-    <p id="puzzleText">
-        Find the clues...
-    </p>
-
+Press E
 </div>
 
 
 
 
 
-<!-- Mobile controls -->
+<!-- Puzzle -->
+
+<div id="puzzlePanel">
+
+<h2>🧠 Puzzle</h2>
+
+<div id="puzzleText">
+Find the clues...
+</div>
+
+</div>
+
+
+
+
+
+<!-- Mobile -->
 
 <div id="mobileControls">
 
 
-    <div id="joystick">
+<div id="joystick">
 
-        <div id="stick"></div>
+<div id="stick"></div>
 
-    </div>
+</div>
 
 
 
-    <button id="touchInteract">
-        OPEN
-    </button>
+<button id="interactButton">
+
+OPEN
+
+</button>
 
 
 </div>
@@ -103,19 +108,22 @@ Press E to interact
 
 
 
-<div id="controls">
+<div id="pcControls">
 
-WASD — Move |
-Mouse — Look |
-E — Interact
+WASD Move |
+Mouse Look |
+E Interact
+
+</div>
+
+
 
 </div>
 
 
 
-</div>
 
-
+<script src="puzzles.js"></script>
 
 <script src="script.js"></script>
 
