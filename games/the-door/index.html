@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,39 +10,70 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
+
 <body>
 
-    <div id="game">
+<div id="game">
 
-        <canvas id="gameCanvas"></canvas>
 
-        <div id="hud">
+    <canvas id="gameCanvas"></canvas>
 
-            <div>
-                LEVEL:
-                <span id="level">1</span>
-            </div>
 
-            <div>
-                ❤️
-                <span id="lives">3</span>
-            </div>
+    <div id="hud">
 
+        <div>
+            LEVEL:
+            <span id="level">1</span>
         </div>
 
-        <div id="crosshair">+</div>
-
-        <div id="message">
-            Click to enter the maze
-        </div>
-
-        <div id="controls">
-            WASD — Move &nbsp; | &nbsp; Mouse — Look
+        <div>
+            ❤️
+            <span id="lives">3</span>
         </div>
 
     </div>
 
-    <script src="script.js"></script>
+
+
+    <div id="crosshair">
+        +
+    </div>
+
+
+
+    <!-- General messages -->
+    <div id="message">
+        Click to enter the maze
+    </div>
+
+
+
+    <!-- Door interaction message -->
+    <div id="interaction">
+        Press E to interact
+    </div>
+
+
+
+    <div id="controls">
+
+        WASD — Move
+        |
+        Mouse — Look
+        |
+        E — Interact
+
+    </div>
+
+
+
+</div>
+
+
+
+<script src="script.js"></script>
+
 
 </body>
+
 </html>
