@@ -5,49 +5,61 @@ const ctx =
 canvas.getContext("2d");
 
 
-
 const message =
 document.getElementById("message");
 
-const interaction =
-document.getElementById("interaction");
 
 const puzzleText =
 document.getElementById("puzzleText");
 
+
 const levelText =
 document.getElementById("level");
 
+
 const livesText =
 document.getElementById("lives");
+
 
 const interactButton =
 document.getElementById("interactButton");
 
 
 
-/*
-====================
-SETTINGS
-====================
-*/
+const FOV =
+Math.PI/3;
 
-const FOV=Math.PI/3;
 
 const SPEED=3;
 
-const ROTATE_SPEED=0.003;
 
-const MAX_DISTANCE=20;
-
+const ROTATE=0.003;
 
 
 
-/*
-====================
-ROOM
-====================
-*/
+let player={
+
+x:8,
+
+y:6,
+
+angle:-Math.PI/2
+
+};
+
+
+
+let keys={};
+
+
+let level=1;
+
+let lives=3;
+
+let started=false;
+
+
+
 
 
 const map=[
@@ -73,81 +85,18 @@ const map=[
 ];
 
 
-const mapWidth=
-map[0].length;
 
-const mapHeight=
-map.length;
-
-
-
-
-
-/*
-====================
-PLAYER
-====================
-*/
-
-
-let player={
-
-x:8,
-
-y:6,
-
-angle:-Math.PI/2
-
-};
-
-
-
-
-
-let keys={};
-
-let started=false;
-
-let level=1;
-
-let lives=3;
-
-
-
-
-
-/*
-====================
-DOORS
-====================
-*/
 
 
 let doors=[
 
-{
-x:2.5,
-y:1.5,
-symbol:"△"
-},
+{x:2.5,y:1.5,symbol:"△"},
 
-{
-x:5.5,
-y:1.5,
-symbol:"○"
-},
+{x:5.5,y:1.5,symbol:"○"},
 
-{
-x:8.5,
-y:1.5,
-symbol:"□"
-},
+{x:8.5,y:1.5,symbol:"□"},
 
-{
-x:11.5,
-y:1.5,
-symbol:"☆"
-}
+{x:11.5,y:1.5,symbol:"☆"}
 
 ];
 
@@ -156,22 +105,29 @@ symbol:"☆"
 
 
 
-/*
-====================
-PUZZLE
-====================
-*/
+function resize(){
+
+canvas.width=innerWidth;
+
+canvas.height=innerHeight;
+
+}
+
+resize();
+
+window.onresize=resize;
+
+
+
+
 
 
 function loadPuzzle(){
 
+generatePuzzle(level);
 
-createPuzzle(level);
-
-
-puzzleText.textContent =
-puzzleToText();
-
+puzzleText.textContent=
+getPuzzleText();
 
 }
 
@@ -183,43 +139,8 @@ loadPuzzle();
 
 
 
-/*
-====================
-RESIZE
-====================
-*/
 
-
-function resize(){
-
-canvas.width=
-innerWidth;
-
-canvas.height=
-innerHeight;
-
-}
-
-
-window.onresize=resize;
-
-resize();
-
-
-
-
-
-
-
-
-/*
-====================
-COLLISION
-====================
-*/
-
-
-function isWall(x,y){
+function wall(x,y){
 
 
 let mx=Math.floor(x);
@@ -231,10 +152,9 @@ let my=Math.floor(y);
 if(
 mx<0||
 my<0||
-mx>=mapWidth||
-my>=mapHeight
+mx>=map[0].length||
+my>=map.length
 )
-
 return true;
 
 
@@ -247,12 +167,6 @@ return map[my][mx]==="#";
 
 
 
-
-/*
-====================
-MOVEMENT
-====================
-*/
 
 
 function update(dt){
@@ -275,25 +189,14 @@ move--;
 
 
 
-let rotate=0;
 
 
 if(keys.a)
-rotate--;
+player.angle-=ROTATE*100*dt;
+
 
 if(keys.d)
-rotate++;
-
-
-
-
-
-player.angle +=
-rotate*
-ROTATE_SPEED*
-100*
-dt;
-
+player.angle+=ROTATE*100*dt;
 
 
 
@@ -306,7 +209,6 @@ SPEED*
 dt;
 
 
-
 let dy=
 Math.sin(player.angle)
 *
@@ -316,18 +218,11 @@ dt;
 
 
 
-if(!isWall(
-player.x+dx,
-player.y
-))
+if(!wall(player.x+dx,player.y))
 player.x+=dx;
 
 
-
-if(!isWall(
-player.x,
-player.y+dy
-))
+if(!wall(player.x,player.y+dy))
 player.y+=dy;
 
 
@@ -339,35 +234,20 @@ player.y+=dy;
 
 
 
-/*
-====================
-INPUT
-====================
-*/
-
 
 document.addEventListener(
 "keydown",
 e=>{
 
 
-keys[
-e.key.toLowerCase()
-]=true;
+keys[e.key.toLowerCase()]=true;
 
 
-
-if(
-e.key.toLowerCase()
-==="e"
-)
-
+if(e.key.toLowerCase()=="e")
 openDoor();
 
 
 });
-
-
 
 
 
@@ -376,9 +256,7 @@ document.addEventListener(
 e=>{
 
 
-keys[
-e.key.toLowerCase()
-]=false;
+keys[e.key.toLowerCase()]=false;
 
 
 });
@@ -391,7 +269,6 @@ canvas.onclick=()=>{
 
 
 started=true;
-
 
 message.textContent=
 "Find the correct door";
@@ -411,13 +288,11 @@ document.addEventListener(
 e=>{
 
 
-if(
-document.pointerLockElement===canvas
-)
+if(document.pointerLockElement===canvas)
 
 player.angle+=
 e.movementX*
-ROTATE_SPEED;
+ROTATE;
 
 
 });
@@ -427,30 +302,21 @@ ROTATE_SPEED;
 
 
 
-
-/*
-====================
-DOOR SYSTEM
-====================
-*/
+function nearDoor(){
 
 
-function getDoor(){
+for(let d of doors){
 
 
-for(let door of doors){
-
-
-let d=
-Math.sqrt(
-(player.x-door.x)**2+
-(player.y-door.y)**2
+let dist=
+Math.hypot(
+player.x-d.x,
+player.y-d.y
 );
 
 
-
-if(d<1.5)
-return door;
+if(dist<1.5)
+return d;
 
 
 }
@@ -465,51 +331,40 @@ return null;
 
 
 
+
 function openDoor(){
 
 
-let door=getDoor();
+let d=nearDoor();
 
 
-
-if(!door)
+if(!d)
 return;
 
 
 
 let index=
-doors.indexOf(door);
+doors.indexOf(d);
 
 
 
-if(
-checkPuzzleAnswer(index)
-){
+if(checkAnswer(index)){
 
 
 message.textContent=
-"✅ Correct!";
+"Correct!";
 
 
 level++;
-
 
 levelText.textContent=
 level;
 
 
-
-setTimeout(()=>{
-
-
-loadPuzzle();
-
-
-message.textContent=
-"New room";
-
-
-},1000);
+setTimeout(
+loadPuzzle,
+1000
+);
 
 
 }
@@ -524,12 +379,13 @@ lives;
 
 
 message.textContent=
-"❌ Wrong door";
+"Wrong door";
 
 
 }
 
 
+
 }
 
 
@@ -537,46 +393,41 @@ message.textContent=
 
 
 
-/*
-====================
-RAYCAST
-====================
-*/
 
 
 function ray(angle){
 
 
-let d=0;
+let dist=0;
 
 
-while(d<MAX_DISTANCE){
+while(dist<20){
 
 
 let x=
 player.x+
-Math.cos(angle)*d;
+Math.cos(angle)*dist;
 
 
 let y=
 player.y+
-Math.sin(angle)*d;
+Math.sin(angle)*dist;
 
 
 
-if(isWall(x,y))
-return d;
+if(wall(x,y))
+return dist;
 
 
-
-d+=0.02;
+dist+=0.03;
 
 
 }
 
 
 
-return MAX_DISTANCE;
+return 20;
+
 
 }
 
@@ -584,18 +435,12 @@ return MAX_DISTANCE;
 
 
 
-
-/*
-====================
-DRAW
-====================
-*/
 
 
 function draw(){
 
 
-ctx.fillStyle="#101820";
+ctx.fillStyle="#111";
 
 ctx.fillRect(
 0,
@@ -605,8 +450,7 @@ canvas.height/2
 );
 
 
-
-ctx.fillStyle="#050505";
+ctx.fillStyle="#000";
 
 ctx.fillRect(
 0,
@@ -618,12 +462,7 @@ canvas.height/2
 
 
 
-
-for(
-let x=0;
-x<canvas.width;
-x++
-){
+for(let x=0;x<canvas.width;x++){
 
 
 let angle=
@@ -633,141 +472,31 @@ x/canvas.width*FOV;
 
 
 
-let distance=
-ray(angle);
+let dist=ray(angle);
 
 
 
-let height=
-canvas.height/distance;
-
-
-
-ctx.fillStyle=
-"#777";
-
-
-
-ctx.fillRect(
-
-x,
-
-canvas.height/2-height/2,
-
-1,
-
-height
-
-);
-
-
-}
-
-
-
-drawDoors();
-
-
-}
-
-
-
-
-
-
-
-
-function drawDoors(){
-
-
-doors.forEach(
-door=>{
-
-
-let dx=
-door.x-player.x;
-
-
-let dy=
-door.y-player.y;
-
-
-
-let dist=
-Math.sqrt(
-dx*dx+dy*dy
-);
-
-
-
-let angle=
-Math.atan2(dy,dx)
--
-player.angle;
-
-
-
-if(
-Math.abs(angle)<FOV/2
-){
-
-
-
-let x=
-(
-0.5+
-angle/FOV
-)
-*
-canvas.width;
-
-
-
-let size=
+let h=
 canvas.height/dist;
 
 
 
-ctx.fillStyle=
-"#8b4513";
+ctx.fillStyle="#777";
 
 
 ctx.fillRect(
-
-x-size/4,
-
-canvas.height/2-size/2,
-
-size/2,
-
-size
-
-);
-
-
-
-ctx.fillStyle="white";
-
-
-ctx.font="30px Arial";
-
-
-ctx.fillText(
-
-door.symbol,
-
-x-10,
-
-canvas.height/2
-
+x,
+canvas.height/2-h/2,
+1,
+h
 );
 
 
 }
 
 
-});
 
+requestAnimationFrame(loop);
 
 }
 
@@ -776,15 +505,18 @@ canvas.height/2
 
 
 
-
-/*
-====================
-MOBILE BUTTON
-====================
-*/
+function loop(t){
 
 
-if(interactButton){
+update(0.016);
+
+draw();
 
 
-interactButton.onclick=()=>{
+}
+
+
+
+
+
+requestAnimationFrame(loop);
