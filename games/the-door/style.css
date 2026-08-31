@@ -5,26 +5,27 @@
 html,
 body {
     margin: 0;
+
     width: 100%;
     height: 100%;
+
     overflow: hidden;
-    background: #050505;
+
+    background: #000;
+
     font-family: Arial, sans-serif;
+
     color: white;
 }
 
 #game {
     position: relative;
+
     width: 100%;
     height: 100%;
-    background: #111;
-    overflow: hidden;
 }
 
-/* 3D game area */
-
-#game::before {
-    content: "";
+#gameCanvas {
     position: absolute;
 
     left: 0;
@@ -33,19 +34,10 @@ body {
     width: 100%;
     height: 100%;
 
-    background:
-        linear-gradient(
-            to bottom,
-            #080808 0%,
-            #171717 45%,
-            #080808 100%
-        );
+    display: block;
 
-    z-index: 0;
+    background: #050505;
 }
-
-
-/* HUD */
 
 #hud {
     position: absolute;
@@ -53,26 +45,26 @@ body {
     top: 20px;
     left: 20px;
 
-    z-index: 20;
+    z-index: 10;
 
     display: flex;
+
     gap: 25px;
 
     padding: 12px 18px;
 
-    background: rgba(0, 0, 0, 0.55);
+    background: rgba(0, 0, 0, 0.6);
 
-    border: 1px solid #444;
+    border: 1px solid #555;
 
     border-radius: 8px;
 
-    font-size: 15px;
+    font-size: 14px;
 
     letter-spacing: 1px;
+
+    pointer-events: none;
 }
-
-
-/* Crosshair */
 
 #crosshair {
     position: absolute;
@@ -82,27 +74,22 @@ body {
 
     transform: translate(-50%, -50%);
 
-    z-index: 20;
+    z-index: 10;
 
-    font-size: 25px;
-
-    color: white;
+    font-size: 24px;
 
     pointer-events: none;
 }
-
-
-/* Message */
 
 #message {
     position: absolute;
 
     left: 50%;
-    top: 75%;
+    bottom: 90px;
 
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
 
-    z-index: 20;
+    z-index: 10;
 
     padding: 12px 20px;
 
@@ -113,245 +100,25 @@ body {
     color: #ddd;
 
     text-align: center;
+
+    pointer-events: none;
 }
-
-
-/* Controls */
 
 #controls {
     position: absolute;
 
-    bottom: 15px;
     left: 50%;
+    bottom: 20px;
 
     transform: translateX(-50%);
 
-    z-index: 20;
+    z-index: 10;
 
     color: #888;
 
     font-size: 13px;
-}
 
+    white-space: nowrap;
 
-/* Puzzle */
-
-#puzzle-panel {
-
-    position: absolute;
-
-    inset: 0;
-
-    z-index: 50;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    background: rgba(0, 0, 0, 0.78);
-
-}
-
-
-.hidden {
-    display: none !important;
-}
-
-
-.puzzle-box {
-
-    width: min(700px, 90%);
-
-    padding: 30px;
-
-    background: #111;
-
-    border: 1px solid #555;
-
-    border-radius: 14px;
-
-    box-shadow: 0 20px 60px black;
-
-    text-align: center;
-}
-
-
-.puzzle-box h2 {
-
-    margin-top: 0;
-
-    font-size: 30px;
-
-}
-
-
-#puzzle-rule {
-
-    color: #ccc;
-
-    font-size: 17px;
-
-    line-height: 1.6;
-
-    margin-bottom: 25px;
-}
-
-
-#doors {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
-    gap: 15px;
-}
-
-
-.door-choice {
-
-    min-height: 150px;
-
-    padding: 15px;
-
-    border: 2px solid #555;
-
-    border-radius: 10px;
-
-    background: #1b1b1b;
-
-    color: white;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-
-}
-
-
-.door-choice:hover {
-
-    transform: translateY(-5px);
-
-    border-color: white;
-
-    background: #252525;
-}
-
-
-.door-number {
-
-    font-size: 14px;
-
-    color: #888;
-
-    margin-bottom: 20px;
-}
-
-
-.door-symbol {
-
-    font-size: 45px;
-
-    margin-bottom: 15px;
-}
-
-
-.door-text {
-
-    font-size: 14px;
-
-    color: #ccc;
-
-}
-
-
-#puzzle-hint {
-
-    margin-bottom: 0;
-
-    color: #777;
-
-}
-
-
-/* Result */
-
-#result-card {
-
-    position: absolute;
-
-    z-index: 100;
-
-    left: 50%;
-    top: 50%;
-
-    transform: translate(-50%, -50%);
-
-    width: 320px;
-
-    padding: 30px;
-
-    background: #111;
-
-    border: 2px solid #555;
-
-    border-radius: 15px;
-
-    text-align: center;
-
-    box-shadow: 0 20px 70px black;
-}
-
-
-#result-card h1 {
-
-    margin-top: 0;
-
-}
-
-
-#restart-button {
-
-    border: none;
-
-    padding: 12px 25px;
-
-    border-radius: 8px;
-
-    background: #2563eb;
-
-    color: white;
-
-    font-size: 16px;
-
-    cursor: pointer;
-}
-
-
-#restart-button:hover {
-
-    background: #1d4ed8;
-}
-
-
-/* Mobile */
-
-@media (max-width: 650px) {
-
-    #doors {
-
-        grid-template-columns:
-            repeat(2, 1fr);
-
-    }
-
-    .door-choice {
-
-        min-height: 120px;
-
-    }
-
+    pointer-events: none;
 }
