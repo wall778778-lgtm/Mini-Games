@@ -1,88 +1,114 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+
+const message = document.getElementById("message");
+const interaction = document.getElementById("interaction");
+
+
 const levelText = document.getElementById("level");
 const livesText = document.getElementById("lives");
-const message = document.getElementById("message");
 
 
 
-/* =========================================
-   GAME SETTINGS
-========================================= */
+/*
+====================================
+ SETTINGS
+====================================
+*/
+
 
 const FOV = Math.PI / 3;
 
-const MOVE_SPEED = 2.8;
+const MOVE_SPEED = 3;
 
 const ROTATE_SPEED = 0.003;
-
-const WALL_SIZE = 1;
 
 const MAX_DISTANCE = 20;
 
 
 
-/* =========================================
-   MAZE
+/*
+====================================
+ MAP
 
-   # = wall
-   . = empty space
-   S = player start
-========================================= */
+ # = wall
+ . = floor
+ S = start
+ D = door position
+====================================
+*/
 
-const maze = [
 
-    "###############",
+const map = [
 
-    "#S............#",
+"###############",
 
-    "#.#####.#####.#",
+"#S............#",
 
-    "#.....#.#.....#",
+"#.#####.#####.#",
 
-    "#####.#.#.#####",
+"#.....#.....D.#",
 
-    "#.....#.#.....#",
+"#####.#.#######",
 
-    "#.#####.#####.#",
+"#.....#.......#",
 
-    "#.............#",
+"#.#####.#####.#",
 
-    "#.#####.#####.#",
+"#.............#",
 
-    "#.....#.#.....#",
-
-    "#####.#.#.#####",
-
-    "#.....#.#.....#",
-
-    "#.#####.#####.#",
-
-    "#.............#",
-
-    "###############"
+"###############"
 
 ];
 
 
 
-const mapWidth = maze[0].length;
-const mapHeight = maze.length;
+const mapWidth = map[0].length;
+const mapHeight = map.length;
 
 
 
-/* =========================================
-   PLAYER
-========================================= */
+
+/*
+====================================
+ DOORS
+====================================
+*/
+
+
+let doors = [
+
+    {
+        x: 12.5,
+        y: 3.5,
+
+        opened:false,
+
+        name:"Door 1"
+
+    }
+
+];
+
+
+
+
+
+/*
+====================================
+ PLAYER
+====================================
+*/
+
 
 let player = {
 
-    x: 1.5,
+    x:1.5,
 
-    y: 1.5,
+    y:1.5,
 
-    angle: 0
+    angle:0
 
 };
 
@@ -90,523 +116,842 @@ let player = {
 
 let keys = {};
 
-let gameStarted = false;
+let gameStarted=false;
 
-let level = 1;
+let level=1;
 
-let lives = 3;
+let lives=3;
 
 
 
-/* =========================================
-   RESIZE
-========================================= */
 
-function resizeCanvas() {
+/*
+====================================
+ RESIZE
+====================================
+*/
 
-    canvas.width = window.innerWidth;
 
-    canvas.height = window.innerHeight;
+function resize(){
+
+    canvas.width =
+    window.innerWidth;
+
+
+    canvas.height =
+    window.innerHeight;
 
 }
+
 
 window.addEventListener(
-    "resize",
-    resizeCanvas
+"resize",
+resize
 );
 
-resizeCanvas();
+
+resize();
 
 
 
-/* =========================================
-   FIND START
-========================================= */
 
-function findStart() {
 
-    for (let y = 0; y < mapHeight; y++) {
+/*
+====================================
+ COLLISION
+====================================
+*/
 
-        for (let x = 0; x < mapWidth; x++) {
 
-            if (maze[y][x] === "S") {
+function isWall(x,y){
 
-                player.x = x + 0.5;
 
-                player.y = y + 0.5;
+    let mx =
+    Math.floor(x);
 
-                return;
 
-            }
-
-        }
-
-    }
-
-}
+    let my =
+    Math.floor(y);
 
 
 
-/* =========================================
-   COLLISION
-========================================= */
-
-function isWall(x, y) {
-
-    const mapX = Math.floor(x);
-    const mapY = Math.floor(y);
-
-    if (
-        mapX < 0 ||
-        mapX >= mapWidth ||
-        mapY < 0 ||
-        mapY >= mapHeight
-    ) {
+    if(
+        mx < 0 ||
+        my < 0 ||
+        mx >= mapWidth ||
+        my >= mapHeight
+    ){
 
         return true;
 
     }
 
-    return maze[mapY][mapX] === "#";
+
+    return map[my][mx] === "#";
+
 
 }
 
 
 
-function canMove(x, y) {
 
-    const radius = 0.2;
+
+function canMove(x,y){
+
+
+    let size = 0.2;
+
+
 
     return (
 
-        !isWall(x - radius, y - radius) &&
-        !isWall(x + radius, y - radius) &&
-        !isWall(x - radius, y + radius) &&
-        !isWall(x + radius, y + radius)
+        !isWall(x-size,y-size) &&
+
+        !isWall(x+size,y-size) &&
+
+        !isWall(x-size,y+size) &&
+
+        !isWall(x+size,y+size)
 
     );
 
+
 }
 
 
 
-/* =========================================
-   MOVEMENT
-========================================= */
-
-function updatePlayer(delta) {
-
-    if (!gameStarted) {
-        return;
-    }
-
-    let forward = 0;
-    let strafe = 0;
 
 
-    if (
-        keys["w"] ||
-        keys["arrowup"]
-    ) {
-
-        forward += 1;
-
-    }
-
-    if (
-        keys["s"] ||
-        keys["arrowdown"]
-    ) {
-
-        forward -= 1;
-
-    }
-
-    if (keys["a"]) {
-
-        strafe -= 1;
-
-    }
-
-    if (keys["d"]) {
-
-        strafe += 1;
-
-    }
+/*
+====================================
+ MOVEMENT
+====================================
+*/
 
 
-    if (
-        forward === 0 &&
-        strafe === 0
-    ) {
+function updatePlayer(delta){
 
+
+    if(!gameStarted)
         return;
 
+
+
+    let forward=0;
+
+    let side=0;
+
+
+
+    if(keys["w"])
+        forward++;
+
+
+    if(keys["s"])
+        forward--;
+
+
+    if(keys["a"])
+        side--;
+
+
+    if(keys["d"])
+        side++;
+
+
+
+
+    if(
+        forward===0 &&
+        side===0
+    )
+        return;
+
+
+
+
+    let length =
+    Math.sqrt(
+        forward*forward+
+        side*side
+    );
+
+
+
+    forward/=length;
+
+    side/=length;
+
+
+
+    let speed =
+    MOVE_SPEED*delta;
+
+
+
+    let dx =
+    (
+        Math.cos(player.angle)*forward -
+        Math.sin(player.angle)*side
+    ) * speed;
+
+
+
+    let dy =
+    (
+        Math.sin(player.angle)*forward +
+        Math.cos(player.angle)*side
+    ) * speed;
+
+
+
+
+
+    if(canMove(
+        player.x+dx,
+        player.y
+    )){
+
+        player.x+=dx;
+
     }
 
 
-    const length =
+
+
+    if(canMove(
+        player.x,
+        player.y+dy
+    )){
+
+        player.y+=dy;
+
+    }
+
+
+
+}
+
+
+
+
+
+
+/*
+====================================
+ KEYBOARD
+====================================
+*/
+
+
+document.addEventListener(
+"keydown",
+e=>{
+
+
+    keys[
+        e.key.toLowerCase()
+    ]=true;
+
+
+
+    if(
+        e.key.toLowerCase()==="e"
+    ){
+
+        interactDoor();
+
+    }
+
+
+
+});
+
+
+
+
+document.addEventListener(
+"keyup",
+e=>{
+
+
+    keys[
+        e.key.toLowerCase()
+    ]=false;
+
+
+
+});
+
+
+
+
+
+/*
+====================================
+ MOUSE LOOK
+====================================
+*/
+
+
+canvas.addEventListener(
+"click",
+()=>{
+
+
+    gameStarted=true;
+
+
+    message.textContent =
+    "Find the door...";
+
+
+    canvas.requestPointerLock();
+
+
+
+});
+
+
+
+
+document.addEventListener(
+"mousemove",
+e=>{
+
+
+    if(
+        document.pointerLockElement
+        === canvas
+    ){
+
+
+        player.angle +=
+        e.movementX *
+        ROTATE_SPEED;
+
+
+    }
+
+
+
+});
+
+
+
+
+
+/*
+====================================
+ DOOR DISTANCE
+====================================
+*/
+
+
+function getNearbyDoor(){
+
+
+    for(let door of doors){
+
+
+        let distance =
         Math.sqrt(
-            forward * forward +
-            strafe * strafe
+
+            (player.x-door.x)**2 +
+
+            (player.y-door.y)**2
+
         );
 
 
-    forward /= length;
 
-    strafe /= length;
-
-
-    const speed =
-        MOVE_SPEED * delta;
+        if(distance < 1.3){
 
 
-    const moveX =
-        (
-            Math.cos(player.angle) * forward -
-            Math.sin(player.angle) * strafe
-        ) * speed;
+            return door;
 
 
-    const moveY =
-        (
-            Math.sin(player.angle) * forward +
-            Math.cos(player.angle) * strafe
-        ) * speed;
+        }
 
-
-    const newX =
-        player.x + moveX;
-
-
-    const newY =
-        player.y + moveY;
-
-
-    if (canMove(newX, player.y)) {
-
-        player.x = newX;
 
     }
 
 
-    if (canMove(player.x, newY)) {
 
-        player.y = newY;
+    return null;
+
+
+}
+
+/*
+====================================
+ DOOR INTERACTION
+====================================
+*/
+
+
+function interactDoor(){
+
+    let door =
+    getNearbyDoor();
+
+
+    if(!door)
+        return;
+
+
+
+    if(!door.opened){
+
+
+        door.opened=true;
+
+
+        interaction.classList.remove("show");
+
+
+        message.textContent =
+        "🚪 Door opened...";
+
+
+        // Temporary until puzzle system
+
+        setTimeout(()=>{
+
+            message.textContent =
+            "A puzzle awaits behind this door.";
+
+        },1500);
+
 
     }
+
 
 }
 
 
 
-/* =========================================
-   KEYBOARD
-========================================= */
 
-document.addEventListener(
-    "keydown",
-    function (event) {
 
-        keys[event.key.toLowerCase()] = true;
+function checkDoorPrompt(){
+
+
+    let door =
+    getNearbyDoor();
+
+
+
+    if(
+        door &&
+        !door.opened
+    ){
+
+        interaction.classList.add("show");
+
 
     }
-);
+    else{
 
-
-document.addEventListener(
-    "keyup",
-    function (event) {
-
-        keys[event.key.toLowerCase()] = false;
+        interaction.classList.remove("show");
 
     }
-);
 
 
 
-/* =========================================
-   MOUSE LOOK
-========================================= */
-
-canvas.addEventListener(
-    "click",
-    function () {
-
-        if (!gameStarted) {
-
-            gameStarted = true;
-
-            message.textContent =
-                "Find your way through the maze...";
-
-        }
-
-        canvas.requestPointerLock();
-
-    }
-);
-
-
-document.addEventListener(
-    "mousemove",
-    function (event) {
-
-        if (
-            document.pointerLockElement === canvas
-        ) {
-
-            player.angle +=
-                event.movementX *
-                ROTATE_SPEED;
-
-        }
-
-    }
-);
+}
 
 
 
-/* =========================================
-   RAYCASTING
-========================================= */
-
-function castRay(angle) {
-
-    const step = 0.02;
-
-    let distance = 0;
 
 
-    while (
+
+/*
+====================================
+ RAYCASTING
+====================================
+*/
+
+
+function castRay(angle){
+
+
+    let distance=0;
+
+
+    while(
         distance < MAX_DISTANCE
-    ) {
-
-        const x =
-            player.x +
-            Math.cos(angle) * distance;
+    ){
 
 
-        const y =
-            player.y +
-            Math.sin(angle) * distance;
+        let x =
+        player.x +
+        Math.cos(angle)*distance;
 
 
-        if (isWall(x, y)) {
+        let y =
+        player.y +
+        Math.sin(angle)*distance;
+
+
+
+        if(isWall(x,y)){
 
             return distance;
 
         }
 
 
-        distance += step;
+
+        distance+=0.02;
+
 
     }
+
 
 
     return MAX_DISTANCE;
 
-}
-
-
-
-/* =========================================
-   DRAW SKY + FLOOR
-========================================= */
-
-function drawBackground() {
-
-    const half =
-        canvas.height / 2;
-
-
-    ctx.fillStyle = "#101820";
-
-    ctx.fillRect(
-        0,
-        0,
-        canvas.width,
-        half
-    );
-
-
-    ctx.fillStyle = "#090909";
-
-    ctx.fillRect(
-        0,
-        half,
-        canvas.width,
-        half
-    );
 
 }
 
 
 
-/* =========================================
-   DRAW 3D WALLS
-========================================= */
 
-function draw3D() {
+
+
+/*
+====================================
+ DRAW BACKGROUND
+====================================
+*/
+
+
+function drawBackground(){
+
+
+    ctx.fillStyle="#101827";
+
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height/2
+    );
+
+
+
+    ctx.fillStyle="#050505";
+
+
+    ctx.fillRect(
+        0,
+        canvas.height/2,
+        canvas.width,
+        canvas.height/2
+    );
+
+
+}
+
+
+
+
+
+
+
+/*
+====================================
+ DRAW DOORS IN 3D
+====================================
+*/
+
+
+function drawDoors(){
+
+
+    for(let door of doors){
+
+
+        let dx =
+        door.x-player.x;
+
+
+        let dy =
+        door.y-player.y;
+
+
+
+        let distance =
+        Math.sqrt(
+            dx*dx+dy*dy
+        );
+
+
+
+        let angle =
+        Math.atan2(dy,dx)
+        -
+        player.angle;
+
+
+
+        while(angle > Math.PI)
+            angle-=Math.PI*2;
+
+
+        while(angle < -Math.PI)
+            angle+=Math.PI*2;
+
+
+
+        if(
+            Math.abs(angle)
+            <
+            FOV/2
+        ){
+
+
+            let screenX =
+            (
+                0.5 +
+                angle/FOV
+            )
+            *
+            canvas.width;
+
+
+
+            let size =
+            canvas.height/distance;
+
+
+
+            ctx.fillStyle =
+            door.opened
+            ?
+            "#333"
+            :
+            "#8b5a2b";
+
+
+
+            ctx.fillRect(
+
+                screenX-size/4,
+
+                canvas.height/2-size/2,
+
+                size/2,
+
+                size
+
+            );
+
+
+
+            ctx.fillStyle="white";
+
+
+            ctx.font="20px Arial";
+
+
+            ctx.fillText(
+
+                door.name,
+
+                screenX-30,
+
+                canvas.height/2
+
+            );
+
+
+        }
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+/*
+====================================
+ DRAW 3D WORLD
+====================================
+*/
+
+
+function draw3D(){
+
 
     drawBackground();
 
 
-    const rayCount =
-        canvas.width;
+
+    let rays =
+    canvas.width;
 
 
-    const stripWidth =
-        canvas.width / rayCount;
+
+    for(
+        let x=0;
+        x<rays;
+        x++
+    ){
 
 
-    for (
-        let ray = 0;
-        ray < rayCount;
-        ray++
-    ) {
+        let camera =
+        x/rays;
 
 
-        const cameraX =
-            ray / rayCount;
 
+        let angle =
+        player.angle -
+        FOV/2 +
+        camera*FOV;
 
-        const rayAngle =
-            player.angle -
-            FOV / 2 +
-            cameraX * FOV;
 
 
         let distance =
-            castRay(rayAngle);
+        castRay(angle);
 
 
-        /*
-            Fish-eye correction.
-        */
 
         distance *=
-            Math.cos(
-                rayAngle -
-                player.angle
-            );
+        Math.cos(
+            angle-player.angle
+        );
 
 
-        const wallHeight =
-            canvas.height /
-            distance;
+
+        let height =
+        canvas.height/distance;
 
 
-        const top =
-            (
-                canvas.height -
-                wallHeight
-            ) / 2;
+
+        let top =
+        canvas.height/2-height/2;
 
 
-        const brightness =
-            Math.max(
-                0.12,
-                1 - distance / MAX_DISTANCE
-            );
 
+        let shade =
+        Math.max(
+            20,
+            120-distance*6
+        );
 
-        /*
-            We use grayscale lighting
-            so the maze has a dark,
-            mysterious appearance.
-        */
-
-        const shade =
-            Math.floor(
-                70 * brightness
-            );
 
 
         ctx.fillStyle =
-            `rgb(${shade}, ${shade}, ${shade})`;
+        `rgb(${shade},${shade},${shade})`;
+
 
 
         ctx.fillRect(
-            ray,
+
+            x,
+
             top,
-            stripWidth + 1,
-            wallHeight
+
+            1,
+
+            height
+
         );
 
+
     }
+
+
+
+    drawDoors();
+
 
 }
 
 
 
-/* =========================================
-   GAME LOOP
-========================================= */
-
-let lastTime = performance.now();
 
 
-function gameLoop(currentTime) {
-
-    const delta =
-        (currentTime - lastTime) / 1000;
 
 
-    lastTime = currentTime;
+
+/*
+====================================
+ GAME LOOP
+====================================
+*/
 
 
-    /*
-        Prevent huge movement if
-        the browser freezes for a moment.
-    */
-
-    const safeDelta =
-        Math.min(delta, 0.05);
+let lastTime =
+performance.now();
 
 
-    updatePlayer(safeDelta);
+
+function loop(time){
+
+
+    let delta =
+    (time-lastTime)/1000;
+
+
+
+    lastTime=time;
+
+
+
+    delta =
+    Math.min(delta,0.05);
+
+
+
+    updatePlayer(delta);
+
+
+
+    checkDoorPrompt();
+
+
 
     draw3D();
 
 
-    requestAnimationFrame(gameLoop);
+
+    requestAnimationFrame(loop);
+
 
 }
 
 
 
-/* =========================================
-   START
-========================================= */
-
-function startGame() {
-
-    level = 1;
-
-    lives = 3;
 
 
-    levelText.textContent =
-        level;
+
+/*
+====================================
+ START
+====================================
+*/
 
 
-    livesText.textContent =
-        lives;
+levelText.textContent =
+level;
 
 
-    findStart();
+livesText.textContent =
+lives;
 
 
-    gameStarted = false;
+message.textContent =
+"Click to enter the maze";
 
 
-    message.textContent =
-        "Click to enter the maze";
 
-}
-
-
-startGame();
-
-requestAnimationFrame(gameLoop);
+requestAnimationFrame(loop);
