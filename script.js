@@ -1,361 +1,191 @@
-console.log("Mini Games website loaded.");
+console.log("Mini Games JavaScript loaded!");
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    console.log("Mini Games DOM loaded!");
+
+    // =====================================================
+    // GAME SEARCH
+    // =====================================================
+
+    const searchBar = document.getElementById("gameSearch");
+    const gameCards = document.querySelectorAll(".game-card");
+
+    console.log("Search bar found:", searchBar);
+    console.log("Game cards found:", gameCards.length);
 
 
-// =====================================================
-// OLD HOMEPAGE BUTTONS
-// =====================================================
+    if (!searchBar) {
 
-const loginButton = document.getElementById("loginButton");
-const registerButton = document.getElementById("registerButton");
-const startButton = document.querySelector(".start-button");
+        console.error("Game search bar was not found.");
 
+        return;
 
-if (loginButton) {
-
-    loginButton.addEventListener("click", () => {
-
-        alert("Login system coming soon.");
-
-    });
-
-}
+    }
 
 
-if (registerButton) {
+    searchBar.addEventListener("input", function () {
 
-    registerButton.addEventListener("click", () => {
-
-        alert("Registration system coming soon.");
-
-    });
-
-}
+        const searchText =
+            this.value
+                .toLowerCase()
+                .trim();
 
 
-if (startButton) {
-
-    startButton.addEventListener("click", () => {
-
-        const section =
-            document.querySelector(".welcome");
-
-        if (section) {
-
-            window.scrollTo({
-
-                top: section.offsetTop,
-
-                behavior: "smooth"
-
-            });
-
-        }
-
-    });
-
-}
+        console.log("Searching:", searchText);
 
 
-// =====================================================
-// REGISTER SYSTEM
-// =====================================================
-
-const registerForm =
-    document.getElementById("registerForm");
+        let foundGames = 0;
 
 
-if (registerForm) {
+        gameCards.forEach(function (card) {
 
-    registerForm.addEventListener(
-        "submit",
-        async (e) => {
+            const titleElement =
+                card.querySelector("h3");
 
-            e.preventDefault();
+            const descriptionElement =
+                card.querySelector("p");
 
-            const username =
-                document.getElementById(
-                    "username"
-                ).value;
 
-            const email =
-                document.getElementById(
-                    "email"
-                ).value;
+            const title =
+                titleElement
+                    ? titleElement.textContent
+                        .toLowerCase()
+                    : "";
 
-            const password =
-                document.getElementById(
-                    "password"
-                ).value;
 
-            try {
+            const description =
+                descriptionElement
+                    ? descriptionElement.textContent
+                        .toLowerCase()
+                    : "";
 
-                const response =
-                    await fetch(
-                        "/api/register",
-                        {
 
-                            method: "POST",
+            /*
+             * Search the game name OR description.
+             */
 
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
+            const matches =
+                searchText === "" ||
+                title.includes(searchText) ||
+                description.includes(searchText);
 
-                            body:
-                                JSON.stringify({
 
-                                    username,
-                                    email,
-                                    password
+            if (matches) {
 
-                                })
+                card.style.display = "";
 
-                        }
+                foundGames++;
+
+            } else {
+
+                card.style.display = "none";
+
+            }
+
+        });
+
+
+        // =================================================
+        // NO RESULTS
+        // =================================================
+
+        let noResults =
+            document.getElementById("noGameResults");
+
+
+        if (foundGames === 0) {
+
+            if (!noResults) {
+
+                noResults =
+                    document.createElement("div");
+
+
+                noResults.id =
+                    "noGameResults";
+
+
+                noResults.textContent =
+                    "No games found.";
+
+
+                noResults.style.gridColumn =
+                    "1 / -1";
+
+
+                noResults.style.textAlign =
+                    "center";
+
+
+                noResults.style.padding =
+                    "40px";
+
+
+                noResults.style.color =
+                    "#9ba0b5";
+
+
+                noResults.style.fontSize =
+                    "18px";
+
+
+                const gameGrid =
+                    document.querySelector(".game-grid");
+
+
+                if (gameGrid) {
+
+                    gameGrid.appendChild(
+                        noResults
                     );
 
-
-                const result =
-                    await response.json();
-
-
-                const resultMessage =
-                    document.getElementById(
-                        "message"
-                    );
-
-
-                if (resultMessage) {
-
-                    resultMessage.textContent =
-                        result.message;
-
-                }
-
-
-                if (result.success) {
-
-                    registerForm.reset();
-
                 }
 
             }
 
-            catch (error) {
 
-                console.error(
-                    "Registration error:",
-                    error
-                );
+            noResults.style.display =
+                "block";
+
+        }
+
+        else {
+
+            if (noResults) {
+
+                noResults.style.display =
+                    "none";
 
             }
 
         }
-    );
 
-}
+    });
 
 
-// =====================================================
-// GAME SEARCH
-// =====================================================
+    // =====================================================
+    // ESCAPE CLEARS SEARCH
+    // =====================================================
 
-const gameSearch =
-    document.getElementById("gameSearch");
-
-
-const gameCards =
-    document.querySelectorAll(".game-card");
-
-
-if (gameSearch && gameCards.length > 0) {
-
-    gameSearch.addEventListener(
-        "input",
-        function () {
-
-            const search =
-                this.value
-                    .toLowerCase()
-                    .trim();
-
-
-            let visibleGames = 0;
-
-
-            gameCards.forEach(
-                card => {
-
-                    const titleElement =
-                        card.querySelector("h3");
-
-
-                    const descriptionElement =
-                        card.querySelector("p");
-
-
-                    const title =
-                        titleElement
-                            ? titleElement.textContent
-                                .toLowerCase()
-                            : "";
-
-
-                    const description =
-                        descriptionElement
-                            ? descriptionElement.textContent
-                                .toLowerCase()
-                            : "";
-
-
-                    /*
-                     * Search both the game name
-                     * and its description.
-                     */
-
-                    const searchableText =
-                        title +
-                        " " +
-                        description;
-
-
-                    /*
-                     * Show matching games.
-                     */
-
-                    if (
-                        search === "" ||
-                        searchableText.includes(search)
-                    ) {
-
-                        card.style.display = "";
-
-                        visibleGames++;
-
-                    }
-
-                    else {
-
-                        card.style.display = "none";
-
-                    }
-
-                }
-            );
-
-
-            // =====================================================
-            // NO RESULTS MESSAGE
-            // =====================================================
-
-            let noResults =
-                document.getElementById(
-                    "noGameResults"
-                );
-
-
-            if (visibleGames === 0) {
-
-                if (!noResults) {
-
-                    noResults =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    noResults.id =
-                        "noGameResults";
-
-
-                    noResults.textContent =
-                        "No games found.";
-
-
-                    noResults.style.textAlign =
-                        "center";
-
-
-                    noResults.style.width =
-                        "100%";
-
-
-                    noResults.style.padding =
-                        "30px";
-
-
-                    noResults.style.color =
-                        "#9ba0b5";
-
-
-                    noResults.style.fontSize =
-                        "18px";
-
-
-                    const gameGrid =
-                        document.querySelector(
-                            ".game-grid"
-                        );
-
-
-                    if (gameGrid) {
-
-                        gameGrid.appendChild(
-                            noResults
-                        );
-
-                    }
-
-                }
-
-                else {
-
-                    noResults.style.display =
-                        "block";
-
-                }
-
-            }
-
-            else {
-
-                if (noResults) {
-
-                    noResults.style.display =
-                        "none";
-
-                }
-
-            }
-
-        }
-    );
-
-}
-
-
-// =====================================================
-// ESCAPE KEY CLEARS SEARCH
-// =====================================================
-
-if (gameSearch) {
-
-    gameSearch.addEventListener(
+    searchBar.addEventListener(
         "keydown",
         function (event) {
 
             if (event.key === "Escape") {
 
-                this.value = "";
+                searchBar.value = "";
 
-                this.dispatchEvent(
+                searchBar.dispatchEvent(
                     new Event("input")
                 );
 
-                this.blur();
+                searchBar.blur();
 
             }
 
         }
     );
 
-}
+
+});
