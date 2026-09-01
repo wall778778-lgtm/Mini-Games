@@ -1,0 +1,549 @@
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+html,
+body {
+
+    margin: 0;
+
+    padding: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    overflow: hidden;
+
+    background: #080a0f;
+
+    color: white;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    user-select: none;
+
+    touch-action: none;
+}
+
+
+#game {
+
+    position: relative;
+
+    width: 100%;
+
+    height: 100%;
+
+    overflow: hidden;
+}
+
+
+#gameCanvas {
+
+    position: absolute;
+
+    left: 0;
+
+    top: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    display: block;
+}
+
+
+
+/* =========================
+   HUD
+========================= */
+
+#hud {
+
+    position: absolute;
+
+    top: 18px;
+
+    left: 18px;
+
+    display: flex;
+
+    gap: 10px;
+
+    z-index: 10;
+}
+
+
+.hudItem {
+
+    background:
+        rgba(10, 12, 18, 0.88);
+
+    border:
+        1px solid rgba(255,255,255,0.12);
+
+    border-radius: 12px;
+
+    padding:
+        10px 15px;
+
+    font-size: 15px;
+
+    box-shadow:
+        0 5px 20px rgba(0,0,0,0.3);
+}
+
+
+.hudItem span {
+
+    font-weight: bold;
+
+    margin-left: 5px;
+}
+
+
+
+/* =========================
+   PUZZLE
+========================= */
+
+#puzzlePanel {
+
+    position: absolute;
+
+    top: 18px;
+
+    right: 18px;
+
+    width: 310px;
+
+    max-height: 70vh;
+
+    overflow-y: auto;
+
+    z-index: 10;
+
+    background:
+        rgba(10,12,18,0.92);
+
+    border:
+        1px solid rgba(255,255,255,0.12);
+
+    border-radius: 15px;
+
+    padding: 18px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.4);
+}
+
+
+.panelTitle {
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    margin-bottom: 12px;
+
+    text-align: center;
+}
+
+
+#puzzleText {
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+    white-space: pre-line;
+
+    color: #ddd;
+}
+
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+#message {
+
+    position: absolute;
+
+    left: 50%;
+
+    bottom: 75px;
+
+    transform:
+        translateX(-50%);
+
+    z-index: 10;
+
+    background:
+        rgba(0,0,0,0.78);
+
+    padding:
+        11px 20px;
+
+    border-radius: 10px;
+
+    font-size: 15px;
+
+    text-align: center;
+
+    pointer-events: none;
+}
+
+
+
+/* =========================
+   INTERACTION
+========================= */
+
+#interactButton {
+
+    position: absolute;
+
+    left: 50%;
+
+    bottom: 125px;
+
+    transform:
+        translateX(-50%);
+
+    z-index: 20;
+
+    display: none;
+
+    border: none;
+
+    border-radius: 12px;
+
+    padding:
+        13px 24px;
+
+    background: #ffffff;
+
+    color: #111;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+#interactButton.show {
+
+    display: block;
+}
+
+
+#interactButton:active {
+
+    transform:
+        translateX(-50%)
+        scale(0.96);
+}
+
+
+
+/* =========================
+   PC CONTROLS
+========================= */
+
+#pcControls {
+
+    position: absolute;
+
+    left: 50%;
+
+    bottom: 18px;
+
+    transform:
+        translateX(-50%);
+
+    z-index: 10;
+
+    color: rgba(255,255,255,0.45);
+
+    font-size: 12px;
+
+    text-align: center;
+
+}
+
+
+
+/* =========================
+   MOBILE
+========================= */
+
+#mobileControls {
+
+    display: none;
+
+}
+
+
+@media (pointer: coarse) {
+
+    #pcControls {
+
+        display: none;
+
+    }
+
+
+    #mobileControls {
+
+        display: block;
+
+        position: absolute;
+
+        left: 20px;
+
+        bottom: 20px;
+
+        width: 140px;
+
+        height: 140px;
+
+        z-index: 20;
+
+    }
+
+
+    #joystick {
+
+        position: absolute;
+
+        left: 0;
+
+        top: 0;
+
+        width: 130px;
+
+        height: 130px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(255,255,255,0.10);
+
+        border:
+            2px solid rgba(255,255,255,0.15);
+    }
+
+
+    #joystickStick {
+
+        position: absolute;
+
+        left: 40px;
+
+        top: 40px;
+
+        width: 50px;
+
+        height: 50px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(255,255,255,0.45);
+    }
+
+
+    #interactButton {
+
+        bottom: 30px;
+
+        right: 20px;
+
+        left: auto;
+
+        transform: none;
+
+        border-radius: 50%;
+
+        width: 85px;
+
+        height: 85px;
+
+        padding: 0;
+
+        font-size: 12px;
+
+    }
+
+
+    #interactButton:active {
+
+        transform:
+            scale(0.95);
+
+    }
+
+
+    #message {
+
+        bottom: 165px;
+
+        width: 80%;
+
+    }
+
+
+    #puzzlePanel {
+
+        top: auto;
+
+        right: 10px;
+
+        bottom: 175px;
+
+        width: 220px;
+
+        max-height: 190px;
+
+        padding: 12px;
+
+    }
+
+
+    .panelTitle {
+
+        font-size: 15px;
+
+    }
+
+
+    #puzzleText {
+
+        font-size: 12px;
+
+    }
+
+
+    #hud {
+
+        top: 10px;
+
+        left: 10px;
+
+    }
+
+
+    .hudItem {
+
+        padding:
+            8px 11px;
+
+        font-size: 13px;
+
+    }
+
+}
+
+
+
+/* =========================
+   START SCREEN
+========================= */
+
+#startScreen {
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 100;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #1a1e29,
+            #050609 70%
+        );
+}
+
+
+.startBox {
+
+    width: min(90%, 420px);
+
+    padding: 45px 30px;
+
+    text-align: center;
+
+    background:
+        rgba(12,14,20,0.94);
+
+    border:
+        1px solid rgba(255,255,255,0.15);
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.6);
+}
+
+
+.startBox h1 {
+
+    margin: 0;
+
+    font-size: 46px;
+
+    letter-spacing: 6px;
+}
+
+
+.startBox p {
+
+    color: #aaa;
+
+    line-height: 1.7;
+
+    margin:
+        18px 0 30px;
+}
+
+
+#startButton {
+
+    border: none;
+
+    border-radius: 12px;
+
+    padding:
+        14px 40px;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+#startButton:active {
+
+    transform: scale(0.96);
+}

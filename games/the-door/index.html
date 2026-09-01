@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <title>The Door</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="game">
+
+    <canvas id="gameCanvas"></canvas>
+
+
+    <!-- HUD -->
+
+    <div id="hud">
+
+        <div class="hudItem">
+            🚪 Room
+            <span id="roomNumber">1</span>
+        </div>
+
+        <div class="hudItem">
+            ❤️
+            <span id="lives">3</span>
+        </div>
+
+    </div>
+
+
+
+    <!-- Puzzle panel -->
+
+    <div id="puzzlePanel">
+
+        <div class="panelTitle">
+            🧠 THE CLUES
+        </div>
+
+        <div id="puzzleText">
+            Loading puzzle...
+        </div>
+
+    </div>
+
+
+
+    <!-- Message -->
+
+    <div id="message">
+        Find the correct door.
+    </div>
+
+
+
+    <!-- Interaction -->
+
+    <button id="interactButton">
+        OPEN DOOR
+    </button>
+
+
+
+    <!-- Mobile joystick -->
+
+    <div id="mobileControls">
+
+        <div id="joystick">
+
+            <div id="joystickStick"></div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- PC controls -->
+
+    <div id="pcControls">
+        WASD / Arrow Keys to move • Click a nearby door to open it
+    </div>
+
+
+
+    <!-- Start screen -->
+
+    <div id="startScreen">
+
+        <div class="startBox">
+
+            <h1>THE DOOR</h1>
+
+            <p>
+                Four doors.<br>
+                One correct answer.
+            </p>
+
+            <button id="startButton">
+                ENTER
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
