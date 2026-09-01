@@ -233,6 +233,37 @@ nav a:hover {
 }
 
 
+/* ====================
+      Search bar
+=====================*/
+
+.game-search {
+    width: 100%;
+    max-width: 600px;
+    margin: 15px auto 25px;
+}
+
+#gameSearch {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px 20px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.06);
+    color: white;
+    font-size: 16px;
+    outline: none;
+    transition: 0.2s;
+}
+
+#gameSearch::placeholder {
+    color: rgba(255,255,255,0.5);
+}
+
+#gameSearch:focus {
+    border-color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.09);
+}
 
 /* =====================
         GAMES
