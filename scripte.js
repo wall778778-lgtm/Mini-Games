@@ -126,3 +126,29 @@ if(registerForm){
 
 
 }
+
+const gameSearch = document.getElementById("gameSearch");
+
+if (gameSearch) {
+    gameSearch.addEventListener("input", function () {
+
+        const search = this.value
+            .toLowerCase()
+            .trim();
+
+        const cards = document.querySelectorAll(".game-card");
+
+        cards.forEach(card => {
+
+            const gameName =
+                card.textContent.toLowerCase();
+
+            if (gameName.includes(search)) {
+                card.style.display = "";
+            } else {
+                card.style.display = "none";
+            }
+
+        });
+    });
+}
