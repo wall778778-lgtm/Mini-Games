@@ -12,7 +12,7 @@
 
 <title>Mini Games - Free Browser Games</title>
 
-<meta name="description" content="Play free online mini games instantly. Arcade, puzzle, memory and action games for PC and mobile.">
+<meta name="description" content="Mini Games: a curated collection of free browser games—arcade, puzzle, memory and action games playable on desktop and mobile.">
 
 <link rel="stylesheet" href="style.css">
 
@@ -49,12 +49,18 @@ About
 Contact
 </a>
 
+<a href="privacy-policy.html">
+Privacy
+</a>
+
+<a href="terms.html">
+Terms
+</a>
+
 </nav>
 
 
 </header>
-
-
 
 
 
@@ -84,9 +90,7 @@ anytime, anywhere
 
 
 <p>
-
-No downloads. No installation.
-Just choose a game and start playing.
+No downloads. No installation. Play short, accessible browser games for quick breaks or longer sessions — works on desktop, tablet, and mobile.
 
 </p>
 
@@ -104,9 +108,65 @@ Explore Games
 </section>
 
 
+<!-- Intro and Featured -->
+<section class="page-content" aria-labelledby="intro-heading">
+  <h1 id="intro-heading">About Mini Games</h1>
+  <p>
+    Mini Games is a small collection of lightweight browser games designed to be played instantly — no sign-ups, no installs. You can browse by category, try featured titles, and play on desktop or mobile.
+  </p>
 
+  <h2>What you can do here</h2>
+  <ul>
+    <li>Play single-player games instantly in your browser.</li>
+    <li>Browse by category (Arcade, Puzzle, Memory, Action).</li>
+    <li>Use the search box to quickly find a game.</li>
+  </ul>
 
+  <h2>Featured Games</h2>
+  <div class="featured-grid">
+    <article class="featured-card">
+      <h3>Breakout</h3>
+      <p>Classic block-breaking arcade action — touch or arrow controls.</p>
+      <a class="play-button" href="games/breakout/">Play</a>
+    </article>
+    <article class="featured-card">
+      <h3>2048 Neon</h3>
+      <p>Merge tiles to reach 2048. Swipe on mobile or use arrow keys.</p>
+      <a class="play-button" href="games/2048/">Play</a>
+    </article>
+    <article class="featured-card">
+      <h3>Flappy Bird</h3>
+      <p>Simple tap or click to fly through pipes and chase a high score.</p>
+      <a class="play-button" href="games/flappy-bird/">Play</a>
+    </article>
+  </div>
 
+  <h2>Game Categories</h2>
+  <div class="category-grid" role="list">
+    <div role="listitem" class="category-pill">Arcade</div>
+    <div role="listitem" class="category-pill">Puzzle</div>
+    <div role="listitem" class="category-pill">Memory</div>
+    <div role="listitem" class="category-pill">Action</div>
+    <div role="listitem" class="category-pill">Casual</div>
+  </div>
+
+  <h2>How to play</h2>
+  <p>
+    Most games run directly in the page. Use on-screen controls, touch gestures, or your keyboard depending on the game. Tap the "Play" button on a game card to open it. Game controls are shown on each game's page.
+  </p>
+
+  <h2>FAQ</h2>
+  <dl class="faq">
+    <dt>Do I need an account?</dt>
+    <dd>No — Mini Games is free to play without accounts or sign-ups.</dd>
+
+    <dt>Are these games safe for mobile?</dt>
+    <dd>Yes — games are designed to run in modern mobile browsers. If you see performance issues, try closing other tabs or using a supported browser (Chrome, Safari, Edge).</dd>
+
+    <dt>How can I report a broken game?</dt>
+    <dd>Use the Contact page to send details and the game URL; the site owner will investigate.</dd>
+  </dl>
+</section>
 
 
 <section class="games" id="games">
@@ -134,6 +194,7 @@ Choose your game
         id="gameSearch"
         placeholder="Search games..."
         autocomplete="off"
+        aria-label="Search games"
     >
 </div>
 
@@ -144,8 +205,8 @@ Choose your game
 
 
 
-<div class="game-card">
-<div class="game-image">🧱</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Breakout">🧱</div>
 <div class="game-info">
 <h3>Breakout</h3>
 <p>Destroy blocks and beat your score.</p>
@@ -154,8 +215,8 @@ Choose your game
 </div>
 
 
-<div class="game-card">
-<div class="game-image">🚪</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="The Door">🚪</div>
 <div class="game-info">
 <h3>The Door</h3>
 <p>Explore the maze, solve the clues, and choose the correct door.</p>
@@ -164,8 +225,8 @@ Choose your game
 </div>
 
 
-<div class="game-card">
-<div class="game-image">🔢</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="2048">🔢</div>
 <div class="game-info">
 <h3>2048</h3>
 <p>Merge numbers and reach 2048.</p>
@@ -177,8 +238,8 @@ Choose your game
 
 
 
-<div class="game-card">
-<div class="game-image">🖱️</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Clicker">🖱️</div>
 <div class="game-info">
 <h3>Clicker</h3>
 <p>Click fast and collect points.</p>
@@ -190,8 +251,8 @@ Choose your game
 
 
 
-<div class="game-card">
-<div class="game-image">🏃</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Endless Runner">🏃</div>
 <div class="game-info">
 <h3>Endless Runner</h3>
 <p>Run and avoid obstacles.</p>
@@ -200,8 +261,8 @@ Choose your game
 </div>
 
 
-  <div class="game-card">
-<div class="game-image">🎨</div>
+  <div class="game-card" role="article">
+<div class="game-image" aria-label="Color Catcher">🎨</div>
 <div class="game-info">
 <h3>Color Catcher</h3>
 <p>Catch each ball in the matching color zone.</p>
@@ -210,8 +271,8 @@ Choose your game
 </div>
 
 
-<div class="game-card">
-<div class="game-image">🐦</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Flappy Bird">🐦</div>
 <div class="game-info">
 <h3>Flappy Bird</h3>
 <p>Fly through pipes and beat your high score.</p>
@@ -221,8 +282,8 @@ Choose your game
   
 
 
-<div class="game-card">
-<div class="game-image">🧊</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Ice Breaker">🧊</div>
 <div class="game-info">
 <h3>Ice Breaker</h3>
 <p>Hit targets and clear the ice.</p>
@@ -231,8 +292,8 @@ Choose your game
 </div>
 
 
-<div class="game-card">
-<div class="game-image">🧲</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Magnet Runner">🧲</div>
 <div class="game-info">
 <h3>Magnet Runner</h3>
 <p>Use magnet power and survive the endless run.</p>
@@ -241,8 +302,8 @@ Choose your game
 </div>
 
 
-<div class="game-card">
-<div class="game-image">🃏</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Memory Cards">🃏</div>
 <div class="game-info">
 <h3>Memory Cards</h3>
 <p>Find matching cards.</p>
@@ -251,9 +312,8 @@ Choose your game
 </div>
 
 
-
-  <div class="game-card">
-<div class="game-image">🧱</div>
+  <div class="game-card" role="article">
+<div class="game-image" aria-label="Tower Builder">🧱</div>
 <div class="game-info">
 <h3>Tower Builder</h3>
 <p>Stack blocks and build the tallest tower.</p>
@@ -262,8 +322,8 @@ Choose your game
 </div>
 
 
-<div class="game-card">
-<div class="game-image">🌀</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Gravity Switch">🌀</div>
 <div class="game-info">
 <h3>Gravity Switch</h3>
 <p>Change gravity and survive the endless challenge.</p>
@@ -272,8 +332,8 @@ Choose your game
 </div>
   
 
-<div class="game-card">
-<div class="game-image">🏓</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Neon Pong">🏓</div>
 <div class="game-info">
 <h3>Neon Pong</h3>
 <p>Challenge the AI.</p>
@@ -282,8 +342,8 @@ Choose your game
 </div>
 
 
-  <div class="game-card">
-<div class="game-image">🌀</div>
+  <div class="game-card" role="article">
+<div class="game-image" aria-label="Gravity Flip">🌀</div>
 <div class="game-info">
 <h3>Gravity Flip</h3>
 <p>Flip gravity and survive the deadly path.</p>
@@ -292,8 +352,8 @@ Choose your game
 </div>
 
 
-<div class="game-card">
-<div class="game-image">🧩</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Sudoku">🧩</div>
 <div class="game-info">
 <h3>Sudoku</h3>
 <p>Complete puzzles and test your logic.</p>
@@ -302,8 +362,8 @@ Choose your game
 </div>
 
 
-  <div class="game-card">
-<div class="game-image">🪐</div>
+  <div class="game-card" role="article">
+<div class="game-image" aria-label="Planet Defender">🪐</div>
 <div class="game-info">
 <h3>Planet Defender</h3>
 <p>Protect your planet from endless meteors.</p>
@@ -312,8 +372,8 @@ Choose your game
 </div>
 
 
-  <div class="game-card">
-<div class="game-image">🔐</div>
+  <div class="game-card" role="article">
+<div class="game-image" aria-label="Code Breaker">🔐</div>
 <div class="game-info">
 <h3>Code Breaker</h3>
 <p>Crack the secret code using your logic.</p>
@@ -322,8 +382,8 @@ Choose your game
 </div>
   
 
-<div class="game-card">
-<div class="game-image">🌌</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Star Catcher">🌌</div>
 <div class="game-info">
 <h3>Star Catcher</h3>
 <p>Catch stars and avoid cosmic dangers.</p>
@@ -332,8 +392,8 @@ Choose your game
 </div>
   
 
-<div class="game-card">
-<div class="game-image">🛸</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Neon Space Fly">🛸</div>
 <div class="game-info">
 <h3>Neon Space Fly</h3>
 <p>Survive in space.</p>
@@ -342,11 +402,8 @@ Choose your game
 </div>
 
 
-
-
-
-<div class="game-card">
-<div class="game-image">🧩</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Puzzle Slider">🧩</div>
 <div class="game-info">
 <h3>Puzzle Slider</h3>
 <p>Solve puzzles.</p>
@@ -355,11 +412,8 @@ Choose your game
 </div>
 
 
-
-
-
-<div class="game-card">
-<div class="game-image">⚡</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Reaction Time">⚡</div>
 <div class="game-info">
 <h3>Reaction Time</h3>
 <p>Test your speed.</p>
@@ -368,11 +422,8 @@ Choose your game
 </div>
 
 
-
-
-
-<div class="game-card">
-<div class="game-image">🧠</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Simon Memory">🧠</div>
 <div class="game-info">
 <h3>Simon Memory</h3>
 <p>Remember the pattern.</p>
@@ -381,11 +432,8 @@ Choose your game
 </div>
 
 
-
-
-
-<div class="game-card">
-<div class="game-image">🐍</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Snake">🐍</div>
 <div class="game-info">
 <h3>Snake</h3>
 <p>Classic snake game.</p>
@@ -394,11 +442,8 @@ Choose your game
 </div>
 
 
-
-
-
-<div class="game-card">
-<div class="game-image">🎯</div>
+<div class="game-card" role="article">
+<div class="game-image" aria-label="Target Click">🎯</div>
 <div class="game-info">
 <h3>Target Click</h3>
 <p>Hit targets quickly.</p>
@@ -410,44 +455,19 @@ Choose your game
 
 
 
-
 </div>
 
 </section>
 
 
 
+<section class="page-content">
+  <h2>Accessibility & Controls</h2>
+  <p>Most games support keyboard and touch controls. Use arrow keys for movement where indicated, or tap/click on mobile. If a game has specific controls, they are listed on the game's page.</p>
 
-
-
-
-<section class="features">
-
-
-<div>
-<h3>⚡ Instant Play</h3>
-<p>Games run directly in your browser.</p>
-</div>
-
-
-<div>
-<h3>📱 Mobile Friendly</h3>
-<p>Play on phones and computers.</p>
-</div>
-
-
-<div>
-<h3>🏆 Fun Challenges</h3>
-<p>Beat your highest scores.</p>
-</div>
-
-
+  <h2>Advertising & Privacy</h2>
+  <p>We display ads to keep the site free. Ads are provided by third-party networks (including Google AdSense) and are separate from game controls. Visit our <a href="privacy-policy.html">Privacy Policy</a> for details and how to manage ad settings.</p>
 </section>
-
-
-
-
-
 
 
 <footer>
