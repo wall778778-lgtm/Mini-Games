@@ -31,7 +31,7 @@
 
 
 
-<nav>
+<nav aria-label="Main navigation">
 
 <a href="index.html">
 Home
@@ -48,6 +48,8 @@ About
 <a href="contact.html">
 Contact
 </a>
+
+<a href="terms.html">Terms</a>
 
 <a href="privacy-policy.html">
 Privacy
@@ -110,16 +112,16 @@ Explore Games
 
 <!-- Intro and Featured -->
 <section class="page-content" aria-labelledby="intro-heading">
-  <h1 id="intro-heading">About Mini Games</h1>
+  <h2 id="intro-heading">About Mini Games</h2>
   <p>
-    Mini Games is a small collection of lightweight browser games designed to be played instantly — no sign-ups, no installs. You can browse by category, try featured titles, and play on desktop or mobile.
+    Mini Games is a collection of short browser games that open directly in your browser. Each game has its own controls and objective, so you can choose a quick reflex challenge, a logic puzzle, or a longer arcade round without creating an account or installing an app.
   </p>
 
   <h2>What you can do here</h2>
   <ul>
     <li>Play single-player games instantly in your browser.</li>
-    <li>Browse by category (Arcade, Puzzle, Memory, Action).</li>
-    <li>Use the search box to quickly find a game.</li>
+    <li>Filter the library by Arcade, Puzzle, Memory, Action, or Casual.</li>
+    <li>Search game names and descriptions to find a specific challenge.</li>
   </ul>
 
   <h2>Featured Games</h2>
@@ -139,15 +141,6 @@ Explore Games
       <p>Simple tap or click to fly through pipes and chase a high score.</p>
       <a class="play-button" href="games/flappy-bird/">Play</a>
     </article>
-  </div>
-
-  <h2>Game Categories</h2>
-  <div class="category-grid" role="list">
-    <div role="listitem" class="category-pill">Arcade</div>
-    <div role="listitem" class="category-pill">Puzzle</div>
-    <div role="listitem" class="category-pill">Memory</div>
-    <div role="listitem" class="category-pill">Action</div>
-    <div role="listitem" class="category-pill">Casual</div>
   </div>
 
   <h2>How to play</h2>
@@ -190,7 +183,7 @@ Choose your game
 
 <div class="game-search">
     <input
-        type="text"
+        type="search"
         id="gameSearch"
         placeholder="Search games..."
         autocomplete="off"
@@ -199,13 +192,23 @@ Choose your game
 </div>
 
 
+<div class="category-filters" role="group" aria-label="Filter games by category">
+  <button class="category-pill is-active" type="button" data-category="all" aria-pressed="true">All games</button>
+  <button class="category-pill" type="button" data-category="arcade" aria-pressed="false">Arcade</button>
+  <button class="category-pill" type="button" data-category="puzzle" aria-pressed="false">Puzzle</button>
+  <button class="category-pill" type="button" data-category="memory" aria-pressed="false">Memory</button>
+  <button class="category-pill" type="button" data-category="action" aria-pressed="false">Action</button>
+  <button class="category-pill" type="button" data-category="casual" aria-pressed="false">Casual</button>
+</div>
+<p class="game-results" id="gameResults" aria-live="polite"></p>
+
 <div class="game-grid">
 
 
 
 
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="arcade">
 <div class="game-image" aria-label="Breakout">🧱</div>
 <div class="game-info">
 <h3>Breakout</h3>
@@ -215,7 +218,7 @@ Choose your game
 </div>
 
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="puzzle">
 <div class="game-image" aria-label="The Door">🚪</div>
 <div class="game-info">
 <h3>The Door</h3>
@@ -225,7 +228,7 @@ Choose your game
 </div>
 
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="puzzle">
 <div class="game-image" aria-label="2048">🔢</div>
 <div class="game-info">
 <h3>2048</h3>
@@ -238,7 +241,7 @@ Choose your game
 
 
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="casual">
 <div class="game-image" aria-label="Clicker">🖱️</div>
 <div class="game-info">
 <h3>Clicker</h3>
@@ -251,7 +254,7 @@ Choose your game
 
 
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="arcade action">
 <div class="game-image" aria-label="Endless Runner">🏃</div>
 <div class="game-info">
 <h3>Endless Runner</h3>
@@ -261,7 +264,7 @@ Choose your game
 </div>
 
 
-  <div class="game-card" role="article">
+  <div class="game-card" role="article" data-categories="action">
 <div class="game-image" aria-label="Color Catcher">🎨</div>
 <div class="game-info">
 <h3>Color Catcher</h3>
@@ -271,7 +274,7 @@ Choose your game
 </div>
 
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="arcade">
 <div class="game-image" aria-label="Flappy Bird">🐦</div>
 <div class="game-info">
 <h3>Flappy Bird</h3>
@@ -282,7 +285,7 @@ Choose your game
   
 
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="arcade">
 <div class="game-image" aria-label="Ice Breaker">🧊</div>
 <div class="game-info">
 <h3>Ice Breaker</h3>
@@ -292,7 +295,7 @@ Choose your game
 </div>
 
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="arcade action">
 <div class="game-image" aria-label="Magnet Runner">🧲</div>
 <div class="game-info">
 <h3>Magnet Runner</h3>
@@ -302,7 +305,7 @@ Choose your game
 </div>
 
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="memory">
 <div class="game-image" aria-label="Memory Cards">🃏</div>
 <div class="game-info">
 <h3>Memory Cards</h3>
@@ -312,7 +315,7 @@ Choose your game
 </div>
 
 
-  <div class="game-card" role="article">
+  <div class="game-card" role="article" data-categories="arcade casual">
 <div class="game-image" aria-label="Tower Builder">🧱</div>
 <div class="game-info">
 <h3>Tower Builder</h3>
@@ -322,7 +325,7 @@ Choose your game
 </div>
 
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="action">
 <div class="game-image" aria-label="Gravity Switch">🌀</div>
 <div class="game-info">
 <h3>Gravity Switch</h3>
@@ -332,7 +335,7 @@ Choose your game
 </div>
   
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="arcade">
 <div class="game-image" aria-label="Neon Pong">🏓</div>
 <div class="game-info">
 <h3>Neon Pong</h3>
@@ -342,7 +345,7 @@ Choose your game
 </div>
 
 
-  <div class="game-card" role="article">
+  <div class="game-card" role="article" data-categories="action">
 <div class="game-image" aria-label="Gravity Flip">🌀</div>
 <div class="game-info">
 <h3>Gravity Flip</h3>
@@ -352,7 +355,7 @@ Choose your game
 </div>
 
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="puzzle">
 <div class="game-image" aria-label="Sudoku">🧩</div>
 <div class="game-info">
 <h3>Sudoku</h3>
@@ -362,7 +365,7 @@ Choose your game
 </div>
 
 
-  <div class="game-card" role="article">
+  <div class="game-card" role="article" data-categories="arcade action">
 <div class="game-image" aria-label="Planet Defender">🪐</div>
 <div class="game-info">
 <h3>Planet Defender</h3>
@@ -372,7 +375,7 @@ Choose your game
 </div>
 
 
-  <div class="game-card" role="article">
+  <div class="game-card" role="article" data-categories="puzzle">
 <div class="game-image" aria-label="Code Breaker">🔐</div>
 <div class="game-info">
 <h3>Code Breaker</h3>
@@ -382,7 +385,7 @@ Choose your game
 </div>
   
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="arcade">
 <div class="game-image" aria-label="Star Catcher">🌌</div>
 <div class="game-info">
 <h3>Star Catcher</h3>
@@ -392,7 +395,7 @@ Choose your game
 </div>
   
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="arcade action">
 <div class="game-image" aria-label="Neon Space Fly">🛸</div>
 <div class="game-info">
 <h3>Neon Space Fly</h3>
@@ -402,7 +405,7 @@ Choose your game
 </div>
 
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="puzzle">
 <div class="game-image" aria-label="Puzzle Slider">🧩</div>
 <div class="game-info">
 <h3>Puzzle Slider</h3>
@@ -412,7 +415,7 @@ Choose your game
 </div>
 
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="casual">
 <div class="game-image" aria-label="Reaction Time">⚡</div>
 <div class="game-info">
 <h3>Reaction Time</h3>
@@ -422,7 +425,7 @@ Choose your game
 </div>
 
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="memory">
 <div class="game-image" aria-label="Simon Memory">🧠</div>
 <div class="game-info">
 <h3>Simon Memory</h3>
@@ -432,7 +435,7 @@ Choose your game
 </div>
 
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="arcade">
 <div class="game-image" aria-label="Snake">🐍</div>
 <div class="game-info">
 <h3>Snake</h3>
@@ -442,7 +445,7 @@ Choose your game
 </div>
 
 
-<div class="game-card" role="article">
+<div class="game-card" role="article" data-categories="casual">
 <div class="game-image" aria-label="Target Click">🎯</div>
 <div class="game-info">
 <h3>Target Click</h3>
@@ -466,7 +469,7 @@ Choose your game
   <p>Most games support keyboard and touch controls. Use arrow keys for movement where indicated, or tap/click on mobile. If a game has specific controls, they are listed on the game's page.</p>
 
   <h2>Advertising & Privacy</h2>
-  <p>We display ads to keep the site free. Ads are provided by third-party networks (including Google AdSense) and are separate from game controls. Visit our <a href="privacy-policy.html">Privacy Policy</a> for details and how to manage ad settings.</p>
+  <p>This site uses Google AdSense code and may show ads on pages with games after Google approves the site. Ads are separate from game controls. Read the <a href="privacy-policy.html">Privacy Policy</a> to learn how advertising cookies and privacy choices work.</p>
 </section>
 
 
