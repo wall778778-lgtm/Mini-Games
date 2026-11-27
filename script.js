@@ -4,6 +4,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const filters = [...document.querySelectorAll(".category-filters [data-category]")];
   const results = document.getElementById("gameResults");
   if (!search || !cards.length) return;
+  cards.forEach(card => {
+    const info = card.querySelector(".game-info");
+    if (!info || info.querySelector(".game-kind")) return;
+    const category = (card.dataset.categories || "game").split(/\s+/)[0];
+    const label = document.createElement("span");
+    label.className = "game-kind";
+    label.textContent = category;
+    info.prepend(label);
+  });
   let active = "all";
   const update = () => {
     const query = search.value.trim().toLocaleLowerCase();
