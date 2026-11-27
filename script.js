@@ -1,191 +1,40 @@
-console.log("Mini Games JavaScript loaded!");
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    console.log("Mini Games DOM loaded!");
-
-    // =====================================================
-    // GAME SEARCH
-    // =====================================================
-
-    const searchBar = document.getElementById("gameSearch");
-    const gameCards = document.querySelectorAll(".game-card");
-
-    console.log("Search bar found:", searchBar);
-    console.log("Game cards found:", gameCards.length);
-
-
-    if (!searchBar) {
-
-        console.error("Game search bar was not found.");
-
-        return;
-
-    }
-
-
-    searchBar.addEventListener("input", function () {
-
-        const searchText =
-            this.value
-                .toLowerCase()
-                .trim();
-
-
-        console.log("Searching:", searchText);
-
-
-        let foundGames = 0;
-
-
-        gameCards.forEach(function (card) {
-
-            const titleElement =
-                card.querySelector("h3");
-
-            const descriptionElement =
-                card.querySelector("p");
-
-
-            const title =
-                titleElement
-                    ? titleElement.textContent
-                        .toLowerCase()
-                    : "";
-
-
-            const description =
-                descriptionElement
-                    ? descriptionElement.textContent
-                        .toLowerCase()
-                    : "";
-
-
-            /*
-             * Search the game name OR description.
-             */
-
-            const matches =
-                searchText === "" ||
-                title.includes(searchText) ||
-                description.includes(searchText);
-
-
-            if (matches) {
-
-                card.style.display = "";
-
-                foundGames++;
-
-            } else {
-
-                card.style.display = "none";
-
-            }
-
-        });
-
-
-        // =================================================
-        // NO RESULTS
-        // =================================================
-
-        let noResults =
-            document.getElementById("noGameResults");
-
-
-        if (foundGames === 0) {
-
-            if (!noResults) {
-
-                noResults =
-                    document.createElement("div");
-
-
-                noResults.id =
-                    "noGameResults";
-
-
-                noResults.textContent =
-                    "No games found.";
-
-
-                noResults.style.gridColumn =
-                    "1 / -1";
-
-
-                noResults.style.textAlign =
-                    "center";
-
-
-                noResults.style.padding =
-                    "40px";
-
-
-                noResults.style.color =
-                    "#9ba0b5";
-
-
-                noResults.style.fontSize =
-                    "18px";
-
-
-                const gameGrid =
-                    document.querySelector(".game-grid");
-
-
-                if (gameGrid) {
-
-                    gameGrid.appendChild(
-                        noResults
-                    );
-
-                }
-
-            }
-
-
-            noResults.style.display =
-                "block";
-
-        }
-
-        else {
-
-            if (noResults) {
-
-                noResults.style.display =
-                    "none";
-
-            }
-
-        }
-
+document.addEventListener("DOMContentLoaded", () => {
+  const search = document.getElementById("gameSearch");
+  const cards = [...document.querySelectorAll(".game-card")];
+  const filters = [...document.querySelectorAll(".category-filters [data-category]")];
+  const results = document.getElementById("gameResults");
+  if (!search || !cards.length) return;
+  cards.forEach(card => {
+    const info = card.querySelector(".game-info");
+    if (!info || info.querySelector(".game-kind")) return;
+    const category = (card.dataset.categories || "game").split(/\s+/)[0];
+    const label = document.createElement("span");
+    label.className = "game-kind";
+    label.textContent = category;
+    info.prepend(label);
+  });
+  let active = "all";
+  const update = () => {
+    const query = search.value.trim().toLocaleLowerCase();
+    let count = 0;
+    cards.forEach(card => {
+      const categories = (card.dataset.categories || "").split(/\s+/);
+      const show = (!query || card.textContent.toLocaleLowerCase().includes(query)) &&
+        (active === "all" || categories.includes(active));
+      card.hidden = !show;
+      if (show) count++;
     });
-
-
-    // =====================================================
-    // ESCAPE CLEARS SEARCH
-    // =====================================================
-
-    searchBar.addEventListener(
-        "keydown",
-        function (event) {
-
-            if (event.key === "Escape") {
-
-                searchBar.value = "";
-
-                searchBar.dispatchEvent(
-                    new Event("input")
-                );
-
-                searchBar.blur();
-
-            }
-
-        }
-    );
-
-
+    if (results) results.textContent = count ? `${count} ${count === 1 ? "game" : "games"} shown` : "No games match. Try another search or category.";
+  };
+  search.addEventListener("input", update);
+  filters.forEach(button => button.addEventListener("click", () => {
+    active = button.dataset.category;
+    filters.forEach(item => {
+      const selected = item === button;
+      item.classList.toggle("is-active", selected);
+      item.setAttribute("aria-pressed", String(selected));
+    });
+    update();
+  }));
+  update();
 });
